@@ -19,15 +19,18 @@ namespace Roulette1.Tests
             allHitChecker.AddRange(StraightHitChecker.Gen());
             allHitChecker.AddRange(SplitHitChecker.Gen());
             allHitChecker.AddRange(StreetHitChecker.Gen());
+            allHitChecker.AddRange(SquareHitChecker.Gen());
 
-            int pickedNum 
+            int pickedNumber = 5;
+            int expectHitCount 
                 = 1 //StraightHitChecker
                 + 4 // SplitHitChecker
-                + 1//StreetHitChecker
+                + 1 //StreetHitChecker
+                + 4 //SquareHitChecker
                 ;
 
-            var hits = allHitChecker.Where(hit => hit.IsHit(pickedNum));
-            Assert.AreEqual(5, hits.Count());
+            var hits = allHitChecker.Where(hit => hit.IsHit(pickedNumber));
+            Assert.AreEqual(expectHitCount, hits.Count());
         }
 
         [Test]
