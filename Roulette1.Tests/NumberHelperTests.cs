@@ -18,7 +18,7 @@ namespace Roulette1.Tests
             foreach (var num in infieldnum)
             {
                 var street = NumberHelper.GetStreet(num);
-                var list = NumberHelper.GetStreetFactor(street).ToList();
+                var list = NumberHelper.GetFactor(street).ToList();
 
                 Assert.IsTrue(list.Contains(num));
             }
@@ -88,7 +88,7 @@ namespace Roulette1.Tests
             foreach (var num in infieldnum)
             {
                 var column = NumberHelper.GetColumn(num);
-                var list = NumberHelper.GetColumnFactor(column).ToList();
+                var list = NumberHelper.GetFactor(column).ToList();
 
                 Assert.IsTrue(list.Contains(num));
             }

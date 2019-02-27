@@ -59,5 +59,25 @@ namespace Roulette1.Tests
                 }
             }
         }
+
+
+        [Test]
+        public void StreetHitTest()
+        {
+            var list = StreetHitChecker.Gen();
+
+            Assert.AreEqual(list.Count, NumberHelper.StreetCount);
+
+            foreach (var hit in list.Cast<StreetHitChecker>())
+            {
+                foreach (var num in allnum)
+                {
+                    if(hit.HitNumbers.Contains(num))
+                        Assert.IsTrue(hit.IsHit(num));
+                    else
+                        Assert.IsFalse(hit.IsHit(num));
+                }
+            }
+        }
     }
 }

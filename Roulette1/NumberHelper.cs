@@ -9,7 +9,9 @@ namespace Roulette1
         public static readonly int N00 = 10000;
         public static readonly int InFieldMin = 1;
         public static readonly int InFieldMax = 36;
-        public static readonly int RowCount = 12;
+        public static readonly int StreetCount = 12;
+
+        public static readonly Column[] AllColumns = new Column[] { Column.C1, Column.C2, Column.C3 };
 
         public static IEnumerable<int> GetAllNumbers()
         {
@@ -60,13 +62,13 @@ namespace Roulette1
 
         static int[] EmptyNumbers = new int[0];
 
-        public static int[] GetColumnFactor(Column column)
+        public static int[] GetFactor(Column column)
         {
             if (column.IsAmoicColumn() == false)
                 return EmptyNumbers;
 
-            int[] result = new int[RowCount];
-            for (int i = 0; i < RowCount; i++)
+            int[] result = new int[StreetCount];
+            for (int i = 0; i < StreetCount; i++)
             {
                 result[i] = (int)column + (3 * i);
             }
@@ -85,7 +87,7 @@ namespace Roulette1
             return (Street)remain + 1;
         }
 
-        public static int[] GetStreetFactor(Street row)
+        public static int[] GetFactor(Street row)
         {
             if (row.IsAmoicRow() == false)
                 return EmptyNumbers;

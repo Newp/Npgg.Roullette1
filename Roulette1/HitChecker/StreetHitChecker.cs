@@ -12,7 +12,7 @@ namespace Roulette1
         public StreetHitChecker(int num)
         {
             var street = NumberHelper.GetStreet(num);
-            this.HitNumbers = new List<int>(NumberHelper.GetStreetFactor(street));
+            this.HitNumbers = new List<int>(NumberHelper.GetFactor(street));
             this.CheckValidate();
         }
 
@@ -21,11 +21,9 @@ namespace Roulette1
         public static List<HitChecker> Gen()
         {
             List<HitChecker> result = new List<HitChecker>();
-
-            foreach (int num in NumberHelper.GetAllNumbers())
+            foreach (int num in NumberHelper.GetFactor(Column.C1))
             {
                 var hit = new StreetHitChecker(num);
-                
                 result.Add(hit);
             }
 
