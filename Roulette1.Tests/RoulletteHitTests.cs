@@ -77,7 +77,26 @@ namespace Roulette1.Tests
             {
                 foreach (var num in allnum)
                 {
-                    if(hit.HitNumbers.Contains(num))
+                    if (hit.HitNumbers.Contains(num))
+                        Assert.IsTrue(hit.IsHit(num));
+                    else
+                        Assert.IsFalse(hit.IsHit(num));
+                }
+            }
+        }
+
+        [Test]
+        public void SquareHitTest()
+        {
+            var list = SquareHitChecker.Gen();
+
+            Assert.AreEqual(2*11, list.Count); //
+
+            foreach (var hit in list.Cast<SquareHitChecker>())
+            {
+                foreach (var num in allnum)
+                {
+                    if (hit.HitNumbers.Contains(num))
                         Assert.IsTrue(hit.IsHit(num));
                     else
                         Assert.IsFalse(hit.IsHit(num));
