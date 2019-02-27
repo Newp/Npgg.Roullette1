@@ -36,8 +36,8 @@ namespace Roulette1
 
             if (IsVertical)
             {
-                Row row = NumberHelper.GetRow(small);
-                if (DeniedRows.Contains(row))
+                Street row = NumberHelper.GetStreet(small);
+                if (DeniedStreets.Contains(row))
                     Throw(small, "허용되지 않는 vertial split 의 row");
             }
             else
@@ -65,7 +65,7 @@ namespace Roulette1
         public override bool IsHit(int number) => this.HitNumber1 == number || this.HitNumber2 == number;
 
         public static List<Column> AllowedColumns = new List<Column>() { Column.C1, Column.C2 };
-        public static List<Row> DeniedRows = new List<Row>() { Row.None, Row.InvalidRow, Row.OutOfRow, Row.R34 };
+        public static List<Street> DeniedStreets = new List<Street>() { Street.None, Street.InvalidStreet, Street.OutOfStreet, Street.Street34 };
 
         public static List<HitChecker> Gen()
         {
@@ -74,14 +74,14 @@ namespace Roulette1
             foreach (int num in NumberHelper.GetAllNumbers())
             {
                 Column col = NumberHelper.GetColumn(num);
-                Row row = NumberHelper.GetRow(num);
+                Street street = NumberHelper.GetStreet(num);
 
                 if (NumberHelper.Is0(num) || AllowedColumns.Contains(col))
                 {
                     var horizontalHit = new SplitHitChecker(num, false);
                     result.Add(horizontalHit);
                 }
-                if (DeniedRows.Contains(row) == false)
+                if (DeniedStreets.Contains(street) == false)
                 {
                     var verticalHit = new SplitHitChecker(num, true);
                     result.Add(verticalHit);

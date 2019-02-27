@@ -10,27 +10,39 @@ namespace Roulette1.Tests
     class NumberHelperTests
     {
         int[] allnum = NumberHelper.GetAllNumbers().ToArray();
+        int[] infieldnum = NumberHelper.GetInFieldNumbers().ToArray();
 
         [Test]
-        public void GetRowTest()
+        public void GetStreetFactorTest()
         {
-            var numbers = NumberHelper.GetAllNumbers().ToList();
-
-            Dictionary<int, Row> rows = new Dictionary<int, Row>();
-
-            foreach (var num in allnum)
+            foreach (var num in infieldnum)
             {
-                rows.Add(num, NumberHelper.GetRow(num));
+                var street = NumberHelper.GetStreet(num);
+                var list = NumberHelper.GetStreetFactor(street).ToList();
+
+                Assert.IsTrue(list.Contains(num));
+            }
+        }
+
+        [Test]
+        public void GetStreetTest()
+        {
+
+            Dictionary<int, Street> streets = new Dictionary<int, Street>();
+
+            foreach (var num in infieldnum)
+            {
+                streets.Add(num, NumberHelper.GetStreet(num));
             }
 
-            foreach (var rowGroup in rows.GroupBy(kvp => kvp.Value))
+            foreach (var rowGroup in streets.GroupBy(kvp => kvp.Value))
             {
                 switch (rowGroup.Key)
                 {
-                    case Row.None:
-                    case Row.InvalidRow:
+                    case Street.None:
+                    case Street.InvalidStreet:
                         throw new Exception("invalid row type=>" + rowGroup.Key.ToString());
-                    case Row.OutOfRow:
+                    case Street.OutOfStreet:
                         Assert.AreEqual(2, rowGroup.Count());
                         break;
                     default:
@@ -44,11 +56,10 @@ namespace Roulette1.Tests
         [Test]
         public void GetColumnTest()
         {
-            var numbers = NumberHelper.GetAllNumbers().ToList();
 
             Dictionary<int, Column> cols = new Dictionary<int, Column>();
 
-            foreach (var num in allnum)
+            foreach (var num in infieldnum)
             {
                 cols.Add(num, NumberHelper.GetColumn(num));
             }
@@ -67,6 +78,19 @@ namespace Roulette1.Tests
                         Assert.AreEqual(12, colGroup.Count());
                         break;
                 }
+            }
+        }
+
+
+        [Test]
+        public void GetColumnFactorTest()
+        {
+            foreach (var num in infieldnum)
+            {
+                var column = NumberHelper.GetColumn(num);
+                var list = NumberHelper.GetColumnFactor(column).ToList();
+
+                Assert.IsTrue(list.Contains(num));
             }
         }
 
