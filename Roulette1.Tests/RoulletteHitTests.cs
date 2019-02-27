@@ -21,6 +21,7 @@ namespace Roulette1.Tests
             allHitChecker.AddRange(StreetHitChecker.Gen());
             allHitChecker.AddRange(SquareHitChecker.Gen());
             allHitChecker.AddRange(FiveNumberHitChecker.Gen());
+            allHitChecker.AddRange(SixNumberHitChecker.Gen());
 
             int pickedNumber = 5;
             int expectHitCount 
@@ -29,6 +30,7 @@ namespace Roulette1.Tests
                 + 1 //StreetHitChecker
                 + 4 //SquareHitChecker
                 + 0 // FiveNumberHitChecker , 5는 FiveNumber 에 Hit하지 않음. (0,00,1,2,3)
+                + 2 //SixNumberHitChecker
                 ;
 
             var hits = allHitChecker.Where(hit => hit.IsHit(pickedNumber));
@@ -113,9 +115,29 @@ namespace Roulette1.Tests
         {
             var list = SquareHitChecker.Gen();
 
-            Assert.AreEqual(2*11, list.Count); //
+            Assert.AreEqual(2 * (Number.StreetCount - 1), list.Count); //
 
             foreach (var hit in list.Cast<SquareHitChecker>())
+            {
+                foreach (var num in allnum)
+                {
+                    if (hit.HitNumbers.Contains(num))
+                        Assert.IsTrue(hit.IsHit(num));
+                    else
+                        Assert.IsFalse(hit.IsHit(num));
+                }
+            }
+        }
+
+
+        [Test]
+        public void SixNumberHitTest()
+        {
+            var list = SixNumberHitChecker.Gen();
+
+            Assert.AreEqual(Number.StreetCount -1, list.Count); //
+
+            foreach (var hit in list.Cast<SixNumberHitChecker>())
             {
                 foreach (var num in allnum)
                 {

@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 
 namespace Roulette1
@@ -21,9 +22,9 @@ namespace Roulette1
         }
     }
 
-    public abstract class MininumChoiceNumberListedHitChecker : NumberListedHitChecker
+    public abstract class SmallChoiceNumberListedHitChecker : NumberListedHitChecker
     {
-        public abstract List<int> AllowedChoiceNumber { get; }
+        public abstract int[] AllowedChoiceNumber { get; }
         protected override void CheckValidate()
         {
             int min = HitNumbers.Min();
@@ -31,6 +32,17 @@ namespace Roulette1
             {
                 Throw(min, "choice is not allowed");
             }
+        }
+
+        public static List<HitChecker> Gen<T>(int [] AllowedNumber) where T : HitChecker
+        {
+            List<HitChecker> result = new List<HitChecker>();
+            foreach(int num in AllowedNumber)
+            {
+                var created = Activator.CreateInstance(typeof(T), new object[] { num });
+                result.Add((T)created);
+            }
+            return result;
         }
     }
 }

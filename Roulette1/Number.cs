@@ -75,6 +75,8 @@ namespace Roulette1
             return result;
         }
 
+        public static OddEven GetOddEven(int num) => num % 2 == 0 ? OddEven.Even : OddEven.Odd;
+
         public static Street GetStreet(int num)
         {
             if(IsInFieldNumber(num))
@@ -84,7 +86,6 @@ namespace Roulette1
             }
             
             return Street.OutOfStreet;
-
         }
 
         public static int[] GetFactor(Street row)
@@ -115,6 +116,13 @@ namespace Roulette1
         C2,
         C3,
         OutOfColumn,
+    }
+    
+    public enum OddEven
+    {
+        None,
+        Odd,
+        Even,
     }
 
     public enum Street
