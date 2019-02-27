@@ -3,7 +3,8 @@ using System.Collections.Generic;
 
 namespace Roulette1
 {
-    public static class NumberHelper
+    
+    public static class Number
     {
         public static readonly int N0 = 100;
         public static readonly int N00 = 10000;

@@ -6,35 +6,17 @@ namespace Roulette1
 
     public class FiveNumberHitChecker : NumberListedHitChecker
     {
-        public override BettingType BettingType => BettingType.Street;
+        public override BettingType BettingType => BettingType.FiveNumber;
 
-        public FiveNumberHitChecker(int num)
+        public FiveNumberHitChecker()
         {
-            var street = NumberHelper.GetStreet(num);
-            this.AddHitNumber(NumberHelper.GetFactor(street));
+            this.AddHitNumber(new int[] { Number.N0, Number.N00, 1,2,3 });//고정픽
             this.CheckValidate();
         }
 
-        public static List<HitChecker> Gen()
-        {
-            List<HitChecker> result = new List<HitChecker>();
-            foreach (int num in NumberHelper.GetFactor(Column.C1))
-            {
-                var hit = new StreetHitChecker(num);
-                result.Add(hit);
-            }
+        public static List<HitChecker> Gen() => new List<HitChecker>() { new FiveNumberHitChecker() };
 
-            return result;
-        }
-
-        protected override void CheckValidate()
-        {
-            int min = HitNumbers.Min();
-            var col = NumberHelper.GetColumn(min);
-
-            if (col != Column.C1)
-                Throw(min, "street hit can only C1");
-        }
-
+        //외부로부터 어떠한 인자도 받지 않기 때문에 유효성 검사가 필요없다.
+        protected override void CheckValidate() { }
     }
 }

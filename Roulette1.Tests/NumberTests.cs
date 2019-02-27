@@ -7,18 +7,18 @@ using System.Text;
 namespace Roulette1.Tests
 {
     [TestFixture]
-    class NumberHelperTests
+    class NumberTests
     {
-        int[] allnum = NumberHelper.GetAllNumbers().ToArray();
-        int[] infieldnum = NumberHelper.GetInFieldNumbers().ToArray();
+        int[] allnum = Number.GetAllNumbers().ToArray();
+        int[] infieldnum = Number.GetInFieldNumbers().ToArray();
 
         [Test]
         public void GetStreetFactorTest()
         {
             foreach (var num in infieldnum)
             {
-                var street = NumberHelper.GetStreet(num);
-                var list = NumberHelper.GetFactor(street).ToList();
+                var street = Number.GetStreet(num);
+                var list = Number.GetFactor(street).ToList();
 
                 Assert.IsTrue(list.Contains(num));
             }
@@ -31,7 +31,7 @@ namespace Roulette1.Tests
 
             foreach (var num in allnum)
             {
-                streets.Add(num, NumberHelper.GetStreet(num));
+                streets.Add(num, Number.GetStreet(num));
             }
 
             foreach (var rowGroup in streets.GroupBy(kvp => kvp.Value))
@@ -59,7 +59,7 @@ namespace Roulette1.Tests
 
             foreach (var num in allnum)
             {
-                cols.Add(num, NumberHelper.GetColumn(num));
+                cols.Add(num, Number.GetColumn(num));
             }
 
             foreach (var colGroup in cols.GroupBy(kvp => kvp.Value))
@@ -84,8 +84,8 @@ namespace Roulette1.Tests
         {
             foreach (var num in infieldnum)
             {
-                var column = NumberHelper.GetColumn(num);
-                var list = NumberHelper.GetFactor(column).ToList();
+                var column = Number.GetColumn(num);
+                var list = Number.GetFactor(column).ToList();
 
                 Assert.IsTrue(list.Contains(num));
             }

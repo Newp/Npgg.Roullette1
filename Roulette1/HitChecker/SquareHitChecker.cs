@@ -25,10 +25,10 @@ namespace Roulette1
         public static List<HitChecker> Gen()
         {
             List<HitChecker> result = new List<HitChecker>();
-            foreach(int num in NumberHelper.GetInFieldNumbers())
+            foreach(int num in Number.GetInFieldNumbers())
             {
-                var column = NumberHelper.GetColumn(num);
-                var street = NumberHelper.GetStreet(num);
+                var column = Number.GetColumn(num);
+                var street = Number.GetStreet(num);
 
                 if(AllowedColumns.Contains(column) == false || DeniedStreets.Contains(street))
                     continue; //조건에 허용되지 않음.
@@ -43,7 +43,7 @@ namespace Roulette1
         protected override void CheckValidate()
         {
             int min = HitNumbers.Min();
-            var col = NumberHelper.GetColumn(min);
+            var col = Number.GetColumn(min);
 
             if (col != Column.C1 && col != Column.C2)
                 Throw(min, "square hit can only C1, C2");

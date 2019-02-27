@@ -36,13 +36,13 @@ namespace Roulette1
 
             if (IsVertical)
             {
-                Street row = NumberHelper.GetStreet(small);
+                Street row = Number.GetStreet(small);
                 if (DeniedStreets.Contains(row))
                     Throw(small, "허용되지 않는 vertial split 의 row");
             }
             else
             {
-                Column col = NumberHelper.GetColumn(small);
+                Column col = Number.GetColumn(small);
                 if(AllowedColumns.Contains(col) == false)
                 {
                     Throw(small, "허용되지 않는 horizonal split 의 column");
@@ -56,8 +56,8 @@ namespace Roulette1
                 this.Throw(small, "인접하지 않은 숫자");
             }
 
-            if (NumberHelper.IsAtomicNumber(big) == false
-                || NumberHelper.IsAtomicNumber(small) == false)
+            if (Number.IsAtomicNumber(big) == false
+                || Number.IsAtomicNumber(small) == false)
                 this.Throw(small, "허용되지 않은 숫자");
         }
 
@@ -71,12 +71,12 @@ namespace Roulette1
         {
             List<HitChecker> result = new List<HitChecker>();
             
-            foreach (int num in NumberHelper.GetAllNumbers())
+            foreach (int num in Number.GetAllNumbers())
             {
-                Column col = NumberHelper.GetColumn(num);
-                Street street = NumberHelper.GetStreet(num);
+                Column col = Number.GetColumn(num);
+                Street street = Number.GetStreet(num);
 
-                if (NumberHelper.Is0(num) || AllowedColumns.Contains(col))
+                if (Number.Is0(num) || AllowedColumns.Contains(col))
                 {
                     var horizontalHit = new SplitHitChecker(num, false);
                     result.Add(horizontalHit);

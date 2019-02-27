@@ -9,7 +9,7 @@ namespace Roulette1.Tests
     [TestFixture]
     class RoulletteHitTests
     {
-        int[] allnum = NumberHelper.GetAllNumbers().ToArray();
+        int[] allnum = Number.GetAllNumbers().ToArray();
 
         [Test]
         public void MultiHitTest()
@@ -20,6 +20,7 @@ namespace Roulette1.Tests
             allHitChecker.AddRange(SplitHitChecker.Gen());
             allHitChecker.AddRange(StreetHitChecker.Gen());
             allHitChecker.AddRange(SquareHitChecker.Gen());
+            allHitChecker.AddRange(FiveNumberHitChecker.Gen());
 
             int pickedNumber = 5;
             int expectHitCount 
@@ -27,6 +28,7 @@ namespace Roulette1.Tests
                 + 4 // SplitHitChecker
                 + 1 //StreetHitChecker
                 + 4 //SquareHitChecker
+                + 0 // FiveNumberHitChecker , 5는 FiveNumber 에 Hit하지 않음. (0,00,1,2,3)
                 ;
 
             var hits = allHitChecker.Where(hit => hit.IsHit(pickedNumber));
@@ -43,6 +45,24 @@ namespace Roulette1.Tests
                 foreach (var num in allnum)
                 {
                     if (num == hit.HitNumber)
+                        Assert.IsTrue(hit.IsHit(num));
+                    else
+                        Assert.IsFalse(hit.IsHit(num));
+                }
+            }
+        }
+
+        [Test]
+        public void FiveNumberHitTest()
+        {
+            var list = FiveNumberHitChecker.Gen();
+
+            List<int> allowed = new List<int>() { Number.N0, Number.N00, 1, 2, 3 };
+            foreach (var hit in list.Cast<FiveNumberHitChecker>())
+            {
+                foreach (var num in allnum)
+                {
+                    if (allowed.Contains(num))
                         Assert.IsTrue(hit.IsHit(num));
                     else
                         Assert.IsFalse(hit.IsHit(num));
@@ -74,7 +94,7 @@ namespace Roulette1.Tests
         {
             var list = StreetHitChecker.Gen();
 
-            Assert.AreEqual(NumberHelper.StreetCount, list.Count);
+            Assert.AreEqual(Number.StreetCount, list.Count);
 
             foreach (var hit in list.Cast<StreetHitChecker>())
             {

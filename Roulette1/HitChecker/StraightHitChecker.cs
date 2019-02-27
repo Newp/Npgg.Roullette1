@@ -20,7 +20,7 @@ namespace Roulette1
         {
             List<HitChecker> result = new List<HitChecker>();
 
-            foreach (int num in NumberHelper.GetAllNumbers())
+            foreach (int num in Number.GetAllNumbers())
             {
                 var hit = new StraightHitChecker(num);
                 
@@ -32,7 +32,7 @@ namespace Roulette1
 
         protected override void CheckValidate()
         {
-            if (NumberHelper.IsAtomicNumber(HitNumber) == false)
+            if (Number.IsAtomicNumber(HitNumber) == false)
             {
                 this.Throw(this.HitNumber);
             }
