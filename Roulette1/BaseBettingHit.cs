@@ -57,20 +57,15 @@ namespace Roulette1
 
         protected override void CheckValidate()
         {
-            if( NumberHelper.IsAtomicNumber(HitNumber) == false)
+            if (NumberHelper.IsAtomicNumber(HitNumber) == false)
             {
                 this.Throw(this.HitNumber);
             }
         }
 
-        
-    }
-
-    public class InvalidHitInfoException : Exception
-    {
-        public InvalidHitInfoException(BettingType bettingType, int numbers, string message)
+        public override string ToString()
         {
-
+            return $"{this.GetType().Name} ( {this.HitNumber} )";
         }
     }
 
@@ -152,14 +147,20 @@ namespace Roulette1
                     var horizontalHit = new SplitHit(num, false);
                     result.Add(horizontalHit);
                 }
-                if(DeniedRows.Contains(row) == false)
+                if (DeniedRows.Contains(row) == false)
                 {
                     var verticalHit = new SplitHit(num, true);
                     result.Add(verticalHit);
                 }
+                
             }
 
             return result;
+        }
+
+        public override string ToString()
+        {
+            return $"{this.GetType().Name} ( {this.HitNumber1}, {this.HitNumber2} )";
         }
     }
 

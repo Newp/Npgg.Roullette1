@@ -52,7 +52,7 @@ namespace Roulette1
             if (IsOutFieldNumber(value))
                 return Row.OutOfRow;
 
-            int remain = (int)Math.Ceiling((value-1d) / 3);
+            int remain = (int)Math.Floor((value-1d) / 3);
             return (Row)remain + 1;
         }
 
