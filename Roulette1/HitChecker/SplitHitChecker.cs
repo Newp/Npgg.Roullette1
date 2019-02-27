@@ -65,7 +65,7 @@ namespace Roulette1
         public override bool IsHit(int number) => this.HitNumber1 == number || this.HitNumber2 == number;
 
         public static List<Column> AllowedColumns = new List<Column>() { Column.C1, Column.C2 };
-        public static List<Street> DeniedStreets = new List<Street>() { Street.None, Street.InvalidStreet, Street.OutOfStreet, Street.Street34 };
+        public static List<Street> DeniedStreets = new List<Street>() { Street.None, Street.OutOfStreet, Street.S34 };
 
         public static List<HitChecker> Gen()
         {

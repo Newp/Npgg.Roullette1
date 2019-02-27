@@ -18,8 +18,13 @@ namespace Roulette1.Tests
 
             allHitChecker.AddRange(StraightHitChecker.Gen());
             allHitChecker.AddRange(SplitHitChecker.Gen());
+            allHitChecker.AddRange(StreetHitChecker.Gen());
 
-            int pickedNum = 5;
+            int pickedNum 
+                = 1 //StraightHitChecker
+                + 4 // SplitHitChecker
+                + 1//StreetHitChecker
+                ;
 
             var hits = allHitChecker.Where(hit => hit.IsHit(pickedNum));
             Assert.AreEqual(5, hits.Count());
@@ -66,7 +71,7 @@ namespace Roulette1.Tests
         {
             var list = StreetHitChecker.Gen();
 
-            Assert.AreEqual(list.Count, NumberHelper.StreetCount);
+            Assert.AreEqual(NumberHelper.StreetCount, list.Count);
 
             foreach (var hit in list.Cast<StreetHitChecker>())
             {

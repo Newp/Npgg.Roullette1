@@ -8,14 +8,14 @@ namespace Roulette1
     {
         public static bool IsAmoicRow(this Street row)
         {
-            if (row == Street.None || row == Street.InvalidStreet || row == Street.OutOfStreet)
+            if (row == Street.None || row == Street.OutOfStreet)
                 return false;
             return true;
         }
 
         public static bool IsAmoicColumn(this Column column)
         {
-            if (column == Column.None || column == Column.InvalidColumn || column == Column.OutOfColumn)
+            if (column == Column.None || column == Column.OutOfColumn)
                 return false;
             return true;
         }

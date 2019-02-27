@@ -27,10 +27,9 @@ namespace Roulette1.Tests
         [Test]
         public void GetStreetTest()
         {
-
             Dictionary<int, Street> streets = new Dictionary<int, Street>();
 
-            foreach (var num in infieldnum)
+            foreach (var num in allnum)
             {
                 streets.Add(num, NumberHelper.GetStreet(num));
             }
@@ -40,7 +39,6 @@ namespace Roulette1.Tests
                 switch (rowGroup.Key)
                 {
                     case Street.None:
-                    case Street.InvalidStreet:
                         throw new Exception("invalid row type=>" + rowGroup.Key.ToString());
                     case Street.OutOfStreet:
                         Assert.AreEqual(2, rowGroup.Count());
@@ -59,7 +57,7 @@ namespace Roulette1.Tests
 
             Dictionary<int, Column> cols = new Dictionary<int, Column>();
 
-            foreach (var num in infieldnum)
+            foreach (var num in allnum)
             {
                 cols.Add(num, NumberHelper.GetColumn(num));
             }
@@ -69,7 +67,6 @@ namespace Roulette1.Tests
                 switch (colGroup.Key)
                 {
                     case Column.None:
-                    case Column.InvalidColumn:
                         throw new Exception("invalid column type=>" + colGroup.Key.ToString());
                     case Column.OutOfColumn:
                         Assert.AreEqual(2, colGroup.Count());

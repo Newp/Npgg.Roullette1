@@ -43,21 +43,20 @@ namespace Roulette1
             return false;
         }
 
-        public static Column GetColumn(int value)
+        public static Column GetColumn(int num)
         {
-            if (IsAtomicNumber(value) == false)
-                return Column.InvalidColumn;
-
-            if (IsOutFieldNumber(value))
-                return Column.OutOfColumn;
-
-            int remain = value % 3;
-            switch (remain)
+            if(IsInFieldNumber(num))
             {
-                case 1: return Column.C1;
-                case 2: return Column.C2;
-                default : return Column.C3; //3의 배수
+                int remain = num % 3;
+                switch (remain)
+                {
+                    case 1: return Column.C1;
+                    case 2: return Column.C2;
+                    default: return Column.C3; //3의 배수
+                }
             }
+
+            return Column.OutOfColumn;
         }
 
         static int[] EmptyNumbers = new int[0];
@@ -75,16 +74,16 @@ namespace Roulette1
             return result;
         }
 
-        public static Street GetStreet(int value)
+        public static Street GetStreet(int num)
         {
-            if (IsAtomicNumber(value) == false)
-                return Street.InvalidStreet;
+            if(IsInFieldNumber(num))
+            {
+                int remain = (int)Math.Floor((num - 1d) / 3);
+                return (Street)remain + 1;
+            }
+            
+            return Street.OutOfStreet;
 
-            if (IsOutFieldNumber(value))
-                return Street.OutOfStreet;
-
-            int remain = (int)Math.Floor((value-1d) / 3);
-            return (Street)remain + 1;
         }
 
         public static int[] GetFactor(Street row)
@@ -115,25 +114,23 @@ namespace Roulette1
         C2,
         C3,
         OutOfColumn,
-        InvalidColumn = 4444
     }
 
     public enum Street
     {
         None = 0,
-        Street1,
-        Street4,
-        Street7,
-        Street10,
-        Street13,
-        Street16,
-        Street19,
-        Street22,
-        Street25,
-        Street28,
-        Street31,
-        Street34,
+        S1,
+        S4,
+        S7,
+        S10,
+        S13,
+        S16,
+        S19,
+        S22,
+        S25,
+        S28,
+        S31,
+        S34,
         OutOfStreet,
-        InvalidStreet = 4444
     }
 }
