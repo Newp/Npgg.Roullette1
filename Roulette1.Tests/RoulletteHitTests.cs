@@ -12,11 +12,25 @@ namespace Roulette1.Tests
         int[] allnum = NumberHelper.GetAllNumbers().ToArray();
 
         [Test]
+        public void MultiHitTest()
+        {
+            List<HitChecker> allHitChecker = new List<HitChecker>();
+
+            allHitChecker.AddRange(StraightHitChecker.Gen());
+            allHitChecker.AddRange(SplitHitChecker.Gen());
+
+            int pickedNum = 5;
+
+            var hits = allHitChecker.Where(hit => hit.IsHit(pickedNum));
+            Assert.AreEqual(5, hits.Count());
+        }
+
+        [Test]
         public void StraightHitTest()
         {
-            var list = StraightHit.Gen();//.ToDictionary(key=>key.Key.Numbers.First());
+            var list = StraightHitChecker.Gen();
 
-            foreach (var hit in list.Cast<StraightHit>())
+            foreach (var hit in list.Cast<StraightHitChecker>())
             {
                 foreach (var num in allnum)
                 {
@@ -31,10 +45,10 @@ namespace Roulette1.Tests
         [Test]
         public void SplitHitTest()
         {
-            var list = SplitHit.Gen();//.ToDictionary(key=>key.Key.Numbers.First());
+            var list = SplitHitChecker.Gen();
 
             Assert.AreEqual(list.Count, 58);
-            foreach (var hit in list.Cast<SplitHit>())
+            foreach (var hit in list.Cast<SplitHitChecker>())
             {
                 foreach(var num in allnum)
                 {

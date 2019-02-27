@@ -1,75 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 
 namespace Roulette1
 {
-    public enum BettingType
-    {
-        Straight,
-        Split,
-        Street,
-        Square,
-    }
-
-    public abstract class BettingHit
-    {
-        public bool Validated { get; private set; }
-        
-        public abstract BettingType BettingType { get; }
-        
-        public abstract bool IsHit(int number);
-        protected abstract void CheckValidate();
-
-        protected void Throw(int num, string msg = null)
-        {
-            throw new InvalidHitInfoException(this.BettingType, num, msg);
-        }
-    }
-
-    public class StraightHit : BettingHit
-    {
-        public readonly int HitNumber = -1;
-
-        public override BettingType BettingType => BettingType.Straight;
-
-        public StraightHit(int num)
-        {
-            this.HitNumber = num;
-            this.CheckValidate();
-        }
-
-        public override bool IsHit(int number) => this.HitNumber == number;
-
-        public static List<BettingHit> Gen()
-        {
-            List<BettingHit> result = new List<BettingHit>();
-
-            foreach (int num in NumberHelper.GetAllNumbers())
-            {
-                var hit = new StraightHit(num);
-                
-                result.Add(hit);
-            }
-
-            return result;
-        }
-
-        protected override void CheckValidate()
-        {
-            if (NumberHelper.IsAtomicNumber(HitNumber) == false)
-            {
-                this.Throw(this.HitNumber);
-            }
-        }
-
-        public override string ToString()
-        {
-            return $"{this.GetType().Name} ( {this.HitNumber} )";
-        }
-    }
-
-    public class SplitHit : BettingHit
+    public class SplitHitChecker : HitChecker
     {
         public readonly int HitNumber1;
         public readonly int HitNumber2;
@@ -77,7 +11,7 @@ namespace Roulette1
 
         public override BettingType BettingType => BettingType.Split;
 
-        public SplitHit(int num, bool isVertical)
+        public SplitHitChecker(int num, bool isVertical)
         {
             if(num == 100)
             {
@@ -133,9 +67,9 @@ namespace Roulette1
         public static List<Column> AllowedColumns = new List<Column>() { Column.C1, Column.C2 };
         public static List<Row> DeniedRows = new List<Row>() { Row.None, Row.InvalidRow, Row.OutOfRow, Row.R34 };
 
-        public static List<BettingHit> Gen()
+        public static List<HitChecker> Gen()
         {
-            List<BettingHit> result = new List<BettingHit>();
+            List<HitChecker> result = new List<HitChecker>();
             
             foreach (int num in NumberHelper.GetAllNumbers())
             {
@@ -144,12 +78,12 @@ namespace Roulette1
 
                 if (NumberHelper.Is0(num) || AllowedColumns.Contains(col))
                 {
-                    var horizontalHit = new SplitHit(num, false);
+                    var horizontalHit = new SplitHitChecker(num, false);
                     result.Add(horizontalHit);
                 }
                 if (DeniedRows.Contains(row) == false)
                 {
-                    var verticalHit = new SplitHit(num, true);
+                    var verticalHit = new SplitHitChecker(num, true);
                     result.Add(verticalHit);
                 }
                 
