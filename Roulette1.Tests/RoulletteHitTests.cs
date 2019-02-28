@@ -158,6 +158,12 @@ namespace Roulette1.Tests
             => NumberListedHitCheckerHitTest<HighLowHitChecker>(HighLowHitChecker.Gen(), HighLowHitChecker.Allowed.Length);
 
 
+
+        [Test]
+        public void EvenOddInvalidNumberTest()
+         => NumberListedHitCheckerHitTest<EvenOddHitChecker>(EvenOddHitChecker.Gen(), EvenOddHitChecker.Allowed.Length);
+
+
         [Test]
         public void EvenOddHitTest()
         {
@@ -169,6 +175,10 @@ namespace Roulette1.Tests
             foreach (int num in Number.GetFactor(EvenOdd.Odd))
                 Assert.IsTrue(list[1].IsHit(num));
         }
+
+        [Test]
+        public void ColumnInvalidNumberTest()
+         => NumberListedHitCheckerHitTest<ColumnHitChecker>(ColumnHitChecker.Gen(), ColumnHitChecker.Allowed.Length);
 
 
         [Test]
@@ -183,7 +193,6 @@ namespace Roulette1.Tests
                 var hitchecker = list[i];
                 for(int y= 0;y < columns.Length; y++)
                 {
-                    
                     foreach (int num in Number.GetFactor(columns[y]))
                     {
                         if(i==y)

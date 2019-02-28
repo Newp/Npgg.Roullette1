@@ -92,7 +92,6 @@ namespace Roulette1
                 int remain = (int)Math.Floor((num - 1d) / 3);
                 return (Street)remain + 1;
             }
-            
             return Street.OutOfStreet;
         }
 
