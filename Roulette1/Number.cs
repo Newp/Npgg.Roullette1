@@ -39,6 +39,7 @@ namespace Roulette1
         }
         
 
+
         public static bool IsAtomicNumber(int value)
         {
             if (IsOutFieldNumber(value))
@@ -76,6 +77,16 @@ namespace Roulette1
             return InFieldNumbers.Where(num => num.GetEvenOdd() == evenOdd).ToArray();
         }
 
+        public static int[] GetFactor(NumberColor color)
+        {
+            switch (color)
+            {
+                case NumberColor.Red: return RedNumbers;
+                case NumberColor.Black: return BlackNumbers;
+                default: return EmptyNumbers;
+            }
+        }
+
         public static int[] GetFactor(Column column)
         {
             if(ColumnFactors.TryGetValue(column, out var result))
@@ -108,6 +119,8 @@ namespace Roulette1
             }
             return result;
         }
+
+        
 
         public static bool IsInFieldNumber(int value)=> InFieldMin <= value && value <= InFieldMax;
         public static bool IsOutFieldNumber(int value)=>Is0(value) || Is00(value);

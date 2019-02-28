@@ -73,6 +73,28 @@ namespace Roulette1.Tests
         }
 
         [Test]
+        public void CourtesyLineHitTest()
+        {
+            var list = CourtesyLineHitChecker.Gen();
+            Assert.AreEqual(1, list.Count);
+            var hit = list.First() as CourtesyLineHitChecker;
+            Assert.IsNotNull(hit);
+            
+            List<int> allowed = new List<int>() { Number.N0, Number.N00 };
+            allowed.AddRange(Enumerable.Range(13, Number.InFieldMax - 12));
+            Assert.AreEqual(allowed.Count, hit.HitNumbers.Count);
+            
+            foreach (var num in allnum)
+            {
+                if (allowed.Contains(num))
+                    Assert.IsTrue(hit.IsHit(num));
+                else
+                    Assert.IsFalse(hit.IsHit(num));
+            }
+            
+        }
+
+        [Test]
         public void SplitHitTest()
         {
             var list = SplitHitChecker.Gen();
@@ -175,6 +197,28 @@ namespace Roulette1.Tests
             foreach (int num in Number.GetFactor(EvenOdd.Odd))
                 Assert.IsTrue(list[1].IsHit(num));
         }
+
+     
+
+        [Test]
+        public void ColorHitTest()
+        {
+            var list = ColorHitChecker.Gen();
+            Assert.AreEqual(2, list.Count);
+
+            foreach (int num in Number.GetFactor(NumberColor.Red))
+                Assert.IsTrue(list[0].IsHit(num));
+
+            foreach (int num in Number.GetFactor(NumberColor.Black))
+                Assert.IsTrue(list[1].IsHit(num));
+
+            NumberListedHitCheckerHitTest<ColorHitChecker>(ColorHitChecker.Gen(), ColorHitChecker.Allowed.Length);
+        }
+
+        [Test]
+        public void ColorInvalidNumberTest()
+          => NumberListedHitCheckerHitTest<ColorHitChecker>(ColorHitChecker.Gen(), ColorHitChecker.Allowed.Length);
+
 
         [Test]
         public void ColumnInvalidNumberTest()

@@ -43,6 +43,4 @@ namespace Roulette1
             return $"{this.GetType().Name} ( {this.HitNumber} )";
         }
     }
-
-
 }
