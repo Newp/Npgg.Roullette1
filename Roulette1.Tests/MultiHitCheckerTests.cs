@@ -21,7 +21,12 @@ namespace Roulette1.Tests
                     typeof(SquareHitChecker),
                 };
 
-        List<Type> defaultcase = new List<Type>();
+        List<Type> outfieldcase = new List<Type>( new Type[]
+         {
+                    typeof(StraightHitChecker),
+         });
+
+        List<Type> infieldcase = new List<Type>();
 
         [OneTimeSetUp]
         public void SetUp()
@@ -38,44 +43,16 @@ namespace Roulette1.Tests
 
                 if(casebycase.Contains(checker) == false)
                 {
-                    defaultcase.Add(checker);
+                    infieldcase.Add(checker);
                 }
             }
 
         }
 
-        //[Test]
-        //public void MultiHitTest()
-        //{
-        //    int pickedNumber = 5;
-        //    int expectHitCount
-        //        = 1 //StraightHitChecker
-        //        + 4 // SplitHitChecker
-        //        + 1 //StreetHitChecker
-        //        + 4 //SquareHitChecker
-        //        + 0 // FiveNumberHitChecker , 5는 FiveNumber 에 Hit하지 않음. (0,00,1,2,3)
-        //        + 2 //SixNumberHitChecker
-        //        ;
-
-        //    var hits = hitCheckers.Where(hit => hit.IsHit(pickedNumber));
-        //    Assert.AreEqual(expectHitCount, hits.Count());
-        //}
-
-        readonly int defaultHit = 1 // straight
-            + 1 // color
-            + 1 // evenodd
-            + 1 // highlow
-            + 1 // street
-            + 1 // column
-            + 1 // dozen
-            ;
-
-
 
         List<HitChecker> GetHits(int num) => hitCheckers.Where(hit => hit.IsHit(num)).ToList();
         void ExpectHit(int num, int fiveNumber, int sixNumber, int courtesyLine, int split, int square)
         {
-            int expect = defaultHit + fiveNumber + sixNumber + courtesyLine + split + square;
             var hitList = hitCheckers.Where(hit => hit.IsHit(num)).ToList();
 
             Dictionary<Type, int> hitMap = new Dictionary<Type, int>();
@@ -84,10 +61,12 @@ namespace Roulette1.Tests
             foreach (var group in grouping)
                 hitMap.Add(group.Key, group.Count());
 
-            foreach(var checkerType in defaultcase)
+            var defaultCase = Number.IsOutFieldNumber(num) ? outfieldcase : infieldcase;
+            foreach (var checkerType in defaultCase)
             {
                 Assert.AreEqual(1, hitMap[checkerType]);
             }
+            int expect = defaultCase.Count + fiveNumber + sixNumber + courtesyLine + split + square;
 
             Func<Type, int> GetHitCount = new Func<Type, int>((type)=>
             {
@@ -104,16 +83,7 @@ namespace Roulette1.Tests
             Assert.AreEqual(expect, hitList.Count);
         }
         
-
-        [Test]
-        public void InFieldMinimumHitTests()
-        {
-            foreach (int num in Number.InFieldNumbers)
-            {
-                var result = GetHits(num);
-                Assert.GreaterOrEqual(result.Count, defaultHit);
-            }
-        }
+        
 
         [Test]
         public void HitTests123()
@@ -174,10 +144,21 @@ namespace Roulette1.Tests
             int fiveNum = 0;
             int sixNum = 1;
             int courtesyLine = 1;
-            
+
             ExpectHit(34, fiveNum, sixNum, courtesyLine, 2, 1);
             ExpectHit(35, fiveNum, sixNum, courtesyLine, 3, 2);
             ExpectHit(36, fiveNum, sixNum, courtesyLine, 2, 1);
+        }
+
+        [Test]
+        public void HitTests0_00()
+        {
+            int fiveNum = 1;
+            int sixNum = 0;
+            int courtesyLine = 1;
+
+            ExpectHit(Number.N0, fiveNum, sixNum, courtesyLine, 1, 0);
+            ExpectHit(Number.N00, fiveNum, sixNum, courtesyLine, 1, 0);
         }
     }
 }
