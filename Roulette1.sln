@@ -7,9 +7,11 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Roulette1", "Roulette1\Roul
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Roulette1.Tests", "Roulette1.Tests\Roulette1.Tests.csproj", "{202DB86D-2674-4F84-BA4A-0619A2963599}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Roulette1.Common", "Roulette1.Common\Roulette1.Common.csproj", "{E35EF99C-7F2C-4EBB-9F32-AF1C36A23BFA}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Roulette1.Common", "Roulette1.Common\Roulette1.Common.csproj", "{E35EF99C-7F2C-4EBB-9F32-AF1C36A23BFA}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Roulette1.Server", "Roulette1.Server\Roulette1.Server.csproj", "{CC2F3BC7-8196-44C1-B123-DFD6E7C30B3B}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Roulette1.Server", "Roulette1.Server\Roulette1.Server.csproj", "{CC2F3BC7-8196-44C1-B123-DFD6E7C30B3B}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Roulette1.Client", "Roulette1.Client\Roulette1.Client.csproj", "{BBC78426-89CD-4820-8B81-5F17FCA37D61}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -33,6 +35,10 @@ Global
 		{CC2F3BC7-8196-44C1-B123-DFD6E7C30B3B}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{CC2F3BC7-8196-44C1-B123-DFD6E7C30B3B}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{CC2F3BC7-8196-44C1-B123-DFD6E7C30B3B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{BBC78426-89CD-4820-8B81-5F17FCA37D61}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{BBC78426-89CD-4820-8B81-5F17FCA37D61}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{BBC78426-89CD-4820-8B81-5F17FCA37D61}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{BBC78426-89CD-4820-8B81-5F17FCA37D61}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
