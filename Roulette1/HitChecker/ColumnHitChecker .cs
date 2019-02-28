@@ -16,7 +16,7 @@ namespace Roulette1
         public ColumnHitChecker(int num)
         {
             var column = Number.GetColumn(num);
-            this.AddHitNumber(Number.GetFactor(column));
+            this.AddHitNumber(column.GetFactor());
             this.CheckValidate();
         }
 

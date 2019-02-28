@@ -28,7 +28,7 @@ namespace Roulette1
             foreach(int num in Number.InFieldNumbers)
             {
                 var column = Number.GetColumn(num);
-                var street = Number.GetStreet(num);
+                var street = num.GetStreet();
 
                 if(AllowedColumns.Contains(column) == false || DeniedStreets.Contains(street))
                     continue; //조건에 허용되지 않음.

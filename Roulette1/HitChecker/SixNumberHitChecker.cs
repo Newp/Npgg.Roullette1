@@ -12,7 +12,7 @@ namespace Roulette1
         public override int[] AllowedChoiceNumber => Allowed;
 
         //모든 마지막 Street를 제외한 C1요소를 가져온다.
-        public static readonly int[] Allowed = Number.GetFactor(Column.C1).Take(Number.StreetCount - 1).ToArray();
+        public static readonly int[] Allowed = Column.C1.GetFactor().Take(Number.StreetCount - 1).ToArray();
         
        
 

@@ -10,15 +10,15 @@ namespace Roulette1
 
         public StreetHitChecker(int num)
         {
-            var street = Number.GetStreet(num);
-            this.AddHitNumber(Number.GetFactor(street));
+            var street = num.GetStreet();
+            this.AddHitNumber(street.GetFactor());
             this.CheckValidate();
         }
 
         public static List<HitChecker> Gen()
         {
             List<HitChecker> result = new List<HitChecker>();
-            foreach (int num in Number.GetFactor(Column.C1))
+            foreach (int num in Column.C1.GetFactor())
             {
                 var hit = new StreetHitChecker(num);
                 result.Add(hit);

@@ -17,8 +17,8 @@ namespace Roulette1.Tests
         {
             foreach (var num in infieldnum)
             {
-                var street = Number.GetStreet(num);
-                var list = Number.GetFactor(street).ToList();
+                var street = num.GetStreet();
+                var list = street.GetFactor().ToList();
 
                 Assert.IsTrue(list.Contains(num));
             }
@@ -31,7 +31,8 @@ namespace Roulette1.Tests
 
             foreach (var num in allnum)
             {
-                streets.Add(num, Number.GetStreet(num));
+                var street = num.GetStreet();
+                streets.Add(num, street);
             }
 
             foreach (var rowGroup in streets.GroupBy(kvp => kvp.Value))
@@ -82,10 +83,15 @@ namespace Roulette1.Tests
         [Test]
         public void GetColumnFactorTest()
         {
+            foreach(var column in Number.AllColumns)
+            {
+                Assert.AreEqual(12, column.GetFactor().Length);
+            }
+
             foreach (var num in infieldnum)
             {
                 var column = Number.GetColumn(num);
-                var list = Number.GetFactor(column).ToList();
+                var list = column.GetFactor().ToList();
 
                 Assert.IsTrue(list.Contains(num));
             }

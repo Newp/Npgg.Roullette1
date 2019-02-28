@@ -11,14 +11,15 @@ namespace Roulette1
         public static List<HitChecker> Gen() => Gen<DozenHitChecker>(Allowed);
         public override int[] AllowedChoiceNumber => Allowed;
 
-        public static readonly int[] Allowed = new int[] { 1, 13, 27 };
+        public static readonly int[] Allowed = new int[] { 1, 13, 25 };
 
         public DozenHitChecker(int num)
         {
             this.AddHitNumber(Enumerable.Range(num, 12).ToArray());
             this.CheckValidate();
         }
-
         
+
+
     }
 }

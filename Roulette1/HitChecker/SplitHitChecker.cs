@@ -36,7 +36,7 @@ namespace Roulette1
 
             if (IsVertical)
             {
-                Street row = Number.GetStreet(small);
+                Street row = small.GetStreet();
                 if (DeniedStreets.Contains(row))
                     Throw(small, "허용되지 않는 vertial split 의 row");
             }
@@ -74,7 +74,7 @@ namespace Roulette1
             foreach (int num in Number.GetAllNumbers())
             {
                 Column col = Number.GetColumn(num);
-                Street street = Number.GetStreet(num);
+                Street street = num.GetStreet();
 
                 if (Number.Is0(num) || AllowedColumns.Contains(col))
                 {

@@ -35,6 +35,41 @@ namespace Roulette1
             return NumberColor.None;
         }
 
+        static int[] EmptyNumbers = new int[0];
+
+        public static int[] GetFactor(this Street row)
+        {
+            if (row.IsAmoicRow() == false)
+                return EmptyNumbers;
+
+            int[] result = new int[3];
+            int start = ((int)row * 3) - 2;
+            for (int i = 0; i < result.Length; i++)
+            {
+                result[i] = start + i;
+            }
+            return result;
+        }
+
+        public static int[] GetFactor(this Column column)
+        {
+            if (Number.ColumnFactors.TryGetValue(column, out var result))
+            {
+                return result;
+            }
+            return EmptyNumbers;
+        }
+
+        public static Street GetStreet(this int num)
+        {
+            if (Number.IsInFieldNumber(num))
+            {
+                int remain = (int)Math.Floor((num - 1d) / 3);
+                return (Street)remain + 1;
+            }
+            return Street.OutOfStreet;
+        }
+
         //public static bool IsInFieldNumber(this Row row)
         //{
         //    if (row == Row.None || row == Row.InvalidRow)

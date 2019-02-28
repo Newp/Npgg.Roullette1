@@ -11,31 +11,6 @@ namespace Roulette1.Tests
     {
         int[] allnum = Number.GetAllNumbers().ToArray();
 
-        [Test]
-        public void MultiHitTest()
-        {
-            List<HitChecker> allHitChecker = new List<HitChecker>();
-
-            allHitChecker.AddRange(StraightHitChecker.Gen());
-            allHitChecker.AddRange(SplitHitChecker.Gen());
-            allHitChecker.AddRange(StreetHitChecker.Gen());
-            allHitChecker.AddRange(SquareHitChecker.Gen());
-            allHitChecker.AddRange(FiveNumberHitChecker.Gen());
-            allHitChecker.AddRange(SixNumberHitChecker.Gen());
-
-            int pickedNumber = 5;
-            int expectHitCount 
-                = 1 //StraightHitChecker
-                + 4 // SplitHitChecker
-                + 1 //StreetHitChecker
-                + 4 //SquareHitChecker
-                + 0 // FiveNumberHitChecker , 5는 FiveNumber 에 Hit하지 않음. (0,00,1,2,3)
-                + 2 //SixNumberHitChecker
-                ;
-
-            var hits = allHitChecker.Where(hit => hit.IsHit(pickedNumber));
-            Assert.AreEqual(expectHitCount, hits.Count());
-        }
 
         [Test]
         public void StraightHitTest()
@@ -237,7 +212,7 @@ namespace Roulette1.Tests
                 var hitchecker = list[i];
                 for(int y= 0;y < columns.Length; y++)
                 {
-                    foreach (int num in Number.GetFactor(columns[y]))
+                    foreach (int num in columns[y].GetFactor())
                     {
                         if(i==y)
                             Assert.IsTrue(hitchecker.IsHit(num));

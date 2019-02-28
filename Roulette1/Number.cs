@@ -12,12 +12,17 @@ namespace Roulette1
         public static readonly int InFieldMin = 1;
         public static readonly int InFieldMax = 36;
         public static readonly int StreetCount = 12;
-        public static int[] InFieldNumbers = Enumerable.Range(InFieldMin, InFieldMax - InFieldMin).ToArray();
+        public static int[] InFieldNumbers = Enumerable.Range(InFieldMin, InFieldMax).ToArray();
 
         public static readonly int[] RedNumbers = new int[] { 1, 3, 5, 7, 9, 12, 14, 16, 18, 19, 21, 23, 25, 27, 30, 32, 34, 36 };
         public static readonly int[] BlackNumbers = new int[] { 2, 4, 6, 8, 10, 11, 13, 15, 17, 20, 22, 24, 26, 28, 29, 31, 33, 35 };
 
         public static readonly Column[] AllColumns = new Column[] { Column.C1, Column.C2, Column.C3 };
+        public static readonly Street[] AllStreets =
+            Enum.GetValues(typeof(Street)).Cast<Street>()
+            .Where(street => street != Street.None && street != Street.OutOfStreet)
+            .OrderBy(street=>(int)street).ToArray();
+
 
         public static readonly Dictionary<Column, int[]> ColumnFactors = new Func<Dictionary<Column, int[]>>(() =>
         {
@@ -87,38 +92,10 @@ namespace Roulette1
             }
         }
 
-        public static int[] GetFactor(Column column)
-        {
-            if(ColumnFactors.TryGetValue(column, out var result))
-            {
-                return result;
-            }
-            return EmptyNumbers;
-        }
+        
 
-        public static Street GetStreet(int num)
-        {
-            if(IsInFieldNumber(num))
-            {
-                int remain = (int)Math.Floor((num - 1d) / 3);
-                return (Street)remain + 1;
-            }
-            return Street.OutOfStreet;
-        }
 
-        public static int[] GetFactor(Street row)
-        {
-            if (row.IsAmoicRow() == false)
-                return EmptyNumbers;
-
-            int[] result = new int[3];
-            int start = ((int)row * 3) - 2;
-            for(int i =0;i<result.Length;i++)
-            {
-                result[i] = start + i;
-            }
-            return result;
-        }
+        
 
         
 
