@@ -129,42 +129,6 @@ namespace Roulette1.Tests
             }
         }
 
-
-        //[Test]
-        //public void SixNumberInvalidNumberTest()
-        //{
-        //    foreach (var num in allnum)
-        //    {
-        //        if (SixNumberHitChecker.Allowed.Contains(num))
-        //            continue;
-        //        try
-        //        {
-        //            new SixNumberHitChecker(num);
-        //            throw new Exception("허용되지 않은 HitChecker가 생성되었습니다.");
-        //        }
-        //        catch (InvalidHitInfoException) { } // 이거정상
-        //    }
-        //}
-
-        //[Test]
-        //public void SixNumberHitTest()
-        //{
-        //    var list = SixNumberHitChecker.Gen();
-
-        //    Assert.AreEqual(Number.StreetCount - 1, list.Count); //
-
-        //    foreach (var hit in list.Cast<SixNumberHitChecker>())
-        //    {
-        //        foreach (var num in allnum)
-        //        {
-        //            if (hit.HitNumbers.Contains(num))
-        //                Assert.IsTrue(hit.IsHit(num));
-        //            else
-        //                Assert.IsFalse(hit.IsHit(num));
-        //        }
-        //    }
-        //}
-
         [Test]
         public void SixNumberHitTest()
             => NumberListedHitCheckerHitTest<SixNumberHitChecker>(SixNumberHitChecker.Gen(), SixNumberHitChecker.Allowed.Length);
@@ -174,12 +138,50 @@ namespace Roulette1.Tests
             => NumberListedHitCheckerHitTest<SixNumberHitChecker>(SixNumberHitChecker.Gen(), SixNumberHitChecker.Allowed.Length);
 
 
+
+
         [Test]
         public void DozenInvalidNumberTest() => InvalidCreateTest(DozenHitChecker.Allowed, (num) => new DozenHitChecker(num));
 
         [Test]
         public void DozenHitTest() =>
             NumberListedHitCheckerHitTest<DozenHitChecker>(DozenHitChecker.Gen(), DozenHitChecker.Allowed.Length);
+
+
+
+        [Test]
+        public void HighLowHitTest()
+          => NumberListedHitCheckerHitTest<HighLowHitChecker>(HighLowHitChecker.Gen(), HighLowHitChecker.Allowed.Length);
+
+        [Test]
+        public void HighLowInvalidNumberTest()
+            => NumberListedHitCheckerHitTest<HighLowHitChecker>(HighLowHitChecker.Gen(), HighLowHitChecker.Allowed.Length);
+
+
+
+        [Test]
+        public void EvenOddHitTest()
+          => NumberListedHitCheckerHitTest<EvenOddHitChecker>(EvenOddHitChecker.Gen(), EvenOddHitChecker.Allowed.Length);
+
+        [Test]
+        public void EvenOddNumberTest()
+        {
+            var list = EvenOddHitChecker.Gen();
+            NumberListedHitCheckerHitTest<EvenOddHitChecker>(list, EvenOddHitChecker.Allowed.Length);
+
+            foreach (int num in Number.GetFactor(EvenOdd.Even))
+            {
+                Assert.IsTrue(list[0].IsHit(num));
+            }
+
+            foreach (int num in Number.GetFactor(EvenOdd.Odd))
+            {
+                Assert.IsTrue(list[1].IsHit(num));
+            }
+
+
+        }
+
 
         void InvalidCreateTest(int[] allowed, Action<int> creator)
         {

@@ -10,7 +10,7 @@ namespace Roulette1.Tests
     class NumberTests
     {
         int[] allnum = Number.GetAllNumbers().ToArray();
-        int[] infieldnum = Number.GetInFieldNumbers().ToArray();
+        int[] infieldnum = Number.InFieldNumbers;
 
         [Test]
         public void GetStreetFactorTest()

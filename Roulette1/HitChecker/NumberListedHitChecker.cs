@@ -14,7 +14,7 @@ namespace Roulette1
 
         protected override abstract void CheckValidate();
 
-        protected void AddHitNumber(int[] hits) => this.HitNumbers.AddRange(hits);
+        protected void AddHitNumber(params int[] hits) => this.HitNumbers.AddRange(hits);
 
         public override string ToString()
         {

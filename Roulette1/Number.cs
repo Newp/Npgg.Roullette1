@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace Roulette1
 {
@@ -11,7 +12,7 @@ namespace Roulette1
         public static readonly int InFieldMin = 1;
         public static readonly int InFieldMax = 36;
         public static readonly int StreetCount = 12;
-
+        public static int[] InFieldNumbers = Enumerable.Range(InFieldMin, InFieldMax - InFieldMin).ToArray();
         public static readonly Column[] AllColumns = new Column[] { Column.C1, Column.C2, Column.C3 };
 
         public static IEnumerable<int> GetAllNumbers()
@@ -24,14 +25,7 @@ namespace Roulette1
             }
             yield break;
         }
-        public static IEnumerable<int> GetInFieldNumbers()
-        {
-            for (int i = InFieldMin; i <= InFieldMax; i++)
-            {
-                yield return i;
-            }
-            yield break;
-        }
+        
 
         public static bool IsAtomicNumber(int value)
         {
@@ -62,6 +56,14 @@ namespace Roulette1
 
         static int[] EmptyNumbers = new int[0];
 
+        public static int[] GetFactor(EvenOdd evenOdd)
+        {
+            if (evenOdd == EvenOdd.None)
+                return EmptyNumbers;
+
+            return InFieldNumbers.Where(num => num.GetEvenOdd() == evenOdd).ToArray();
+        }
+
         public static int[] GetFactor(Column column)
         {
             if (column.IsAmoicColumn() == false)
@@ -74,8 +76,7 @@ namespace Roulette1
             }
             return result;
         }
-
-        public static OddEven GetOddEven(int num) => num % 2 == 0 ? OddEven.Even : OddEven.Odd;
+        
 
         public static Street GetStreet(int num)
         {
@@ -118,7 +119,7 @@ namespace Roulette1
         OutOfColumn,
     }
     
-    public enum OddEven
+    public enum EvenOdd
     {
         None,
         Odd,

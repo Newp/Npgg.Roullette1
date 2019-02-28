@@ -20,6 +20,9 @@ namespace Roulette1
             return true;
         }
 
+
+        public static EvenOdd GetEvenOdd(this int num) => num % 2 == 0 ? EvenOdd.Even : EvenOdd.Odd;
+
         //public static bool IsInFieldNumber(this Row row)
         //{
         //    if (row == Row.None || row == Row.InvalidRow)

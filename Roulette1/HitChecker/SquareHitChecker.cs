@@ -25,7 +25,7 @@ namespace Roulette1
         public static List<HitChecker> Gen()
         {
             List<HitChecker> result = new List<HitChecker>();
-            foreach(int num in Number.GetInFieldNumbers())
+            foreach(int num in Number.InFieldNumbers)
             {
                 var column = Number.GetColumn(num);
                 var street = Number.GetStreet(num);
