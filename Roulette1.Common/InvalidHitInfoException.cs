@@ -16,6 +16,4 @@ namespace Roulette1
             this.DetailMessage = message;
         }
     }
-
-
 }
