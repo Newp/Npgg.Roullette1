@@ -158,28 +158,41 @@ namespace Roulette1.Tests
             => NumberListedHitCheckerHitTest<HighLowHitChecker>(HighLowHitChecker.Gen(), HighLowHitChecker.Allowed.Length);
 
 
-
         [Test]
         public void EvenOddHitTest()
-          => NumberListedHitCheckerHitTest<EvenOddHitChecker>(EvenOddHitChecker.Gen(), EvenOddHitChecker.Allowed.Length);
-
-        [Test]
-        public void EvenOddNumberTest()
         {
             var list = EvenOddHitChecker.Gen();
-            NumberListedHitCheckerHitTest<EvenOddHitChecker>(list, EvenOddHitChecker.Allowed.Length);
 
             foreach (int num in Number.GetFactor(EvenOdd.Even))
-            {
                 Assert.IsTrue(list[0].IsHit(num));
-            }
 
             foreach (int num in Number.GetFactor(EvenOdd.Odd))
-            {
                 Assert.IsTrue(list[1].IsHit(num));
+        }
+
+
+        [Test]
+        public void ColumnHitTest()
+        {
+            var list = ColumnHitChecker.Gen();
+            var columns = new Column[] { Column.C1, Column.C2, Column.C3 };
+            Assert.AreEqual(columns.Length, list.Count);
+            
+            for (int i = 0; i < columns.Length; i++)
+            {
+                var hitchecker = list[i];
+                for(int y= 0;y < columns.Length; y++)
+                {
+                    
+                    foreach (int num in Number.GetFactor(columns[y]))
+                    {
+                        if(i==y)
+                            Assert.IsTrue(hitchecker.IsHit(num));
+                        else
+                            Assert.IsFalse(hitchecker.IsHit(num));
+                    }
+                }
             }
-
-
         }
 
 

@@ -4,18 +4,21 @@ using System.Linq;
 namespace Roulette1
 {
 
-    public class DozenHitChecker : SmallChoiceNumberListedHitChecker
+    public class SixNumberHitChecker : SmallChoiceNumberListedHitChecker
     {
-        public override BettingType BettingType => BettingType.Dozen;
+        public override BettingType BettingType => BettingType.SixNumber;
 
-        public static List<HitChecker> Gen() => Gen<DozenHitChecker>(Allowed);
+        public static List<HitChecker> Gen() => Gen<SixNumberHitChecker>(Allowed);
         public override int[] AllowedChoiceNumber => Allowed;
 
-        public static readonly int[] Allowed = new int[] { 1, 13, 27 };
+        //모든 마지막 Street를 제외한 C1요소를 가져온다.
+        public static readonly int[] Allowed = Number.GetFactor(Column.C1).Take(Number.StreetCount - 1).ToArray();
+        
+       
 
-        public DozenHitChecker(int num)
+        public SixNumberHitChecker(int num)
         {
-            this.AddHitNumber(Enumerable.Range(num, 12).ToArray());
+            this.AddHitNumber(Enumerable.Range(num, 6).ToArray());
             this.CheckValidate();
         }
 
