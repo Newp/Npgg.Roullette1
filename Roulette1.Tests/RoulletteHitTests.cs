@@ -130,14 +130,78 @@ namespace Roulette1.Tests
         }
 
 
+        //[Test]
+        //public void SixNumberInvalidNumberTest()
+        //{
+        //    foreach (var num in allnum)
+        //    {
+        //        if (SixNumberHitChecker.Allowed.Contains(num))
+        //            continue;
+        //        try
+        //        {
+        //            new SixNumberHitChecker(num);
+        //            throw new Exception("허용되지 않은 HitChecker가 생성되었습니다.");
+        //        }
+        //        catch (InvalidHitInfoException) { } // 이거정상
+        //    }
+        //}
+
+        //[Test]
+        //public void SixNumberHitTest()
+        //{
+        //    var list = SixNumberHitChecker.Gen();
+
+        //    Assert.AreEqual(Number.StreetCount - 1, list.Count); //
+
+        //    foreach (var hit in list.Cast<SixNumberHitChecker>())
+        //    {
+        //        foreach (var num in allnum)
+        //        {
+        //            if (hit.HitNumbers.Contains(num))
+        //                Assert.IsTrue(hit.IsHit(num));
+        //            else
+        //                Assert.IsFalse(hit.IsHit(num));
+        //        }
+        //    }
+        //}
+
         [Test]
         public void SixNumberHitTest()
+            => NumberListedHitCheckerHitTest<SixNumberHitChecker>(SixNumberHitChecker.Gen(), SixNumberHitChecker.Allowed.Length);
+
+        [Test]
+        public void SixNumberInvalidNumberTest()
+            => NumberListedHitCheckerHitTest<SixNumberHitChecker>(SixNumberHitChecker.Gen(), SixNumberHitChecker.Allowed.Length);
+
+
+        [Test]
+        public void DozenInvalidNumberTest() => InvalidCreateTest(DozenHitChecker.Allowed, (num) => new DozenHitChecker(num));
+
+        [Test]
+        public void DozenHitTest() =>
+            NumberListedHitCheckerHitTest<DozenHitChecker>(DozenHitChecker.Gen(), DozenHitChecker.Allowed.Length);
+
+        void InvalidCreateTest(int[] allowed, Action<int> creator)
         {
-            var list = SixNumberHitChecker.Gen();
+            foreach (var num in allnum)
+            {
+                if (allowed.Contains(num))
+                    continue;
+                try
+                {
+                    creator(num);
+                    throw new Exception("허용되지 않은 HitChecker가 생성되었습니다.");
+                }
+                catch (InvalidHitInfoException) { } // 이거정상
+            }
+        }
 
-            Assert.AreEqual(Number.StreetCount -1, list.Count); //
+        void NumberListedHitCheckerHitTest<T>(List<HitChecker> list, int expectCount)
+            where T : NumberListedHitChecker
+        {
+            Assert.AreEqual(expectCount, list.Count); 
 
-            foreach (var hit in list.Cast<SixNumberHitChecker>())
+            foreach (var hit in list.Cast<T>())
             {
                 foreach (var num in allnum)
                 {
@@ -147,6 +211,9 @@ namespace Roulette1.Tests
                         Assert.IsFalse(hit.IsHit(num));
                 }
             }
+
         }
+
+        
     }
 }
