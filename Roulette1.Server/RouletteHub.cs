@@ -6,18 +6,28 @@ namespace Roulette1.Server
 {
     public class RouletteHub : Hub
     {
-        GameManager _gameManager;
-        public RouletteHub(GameManager gameManager)
+        ActorManager _gameManager;
+        public RouletteHub(ActorManager gameManager)
         {
-            Console.WriteLine("game manager initialized");
             this._gameManager = gameManager;
+        }
+
+        public async void Login(string userId)
+        {
+            RequestNewUser request = new RequestNewUser()
+            {
+                UserId = userId,
+                ConnectedId = Context.ConnectionId
+            };
+            var user = await _gameManager.SessonRequest<User>(request);
         }
 
         public async void Betting(object[] obj)
         {
             await Clients.Caller.SendAsync("bettingRespond");
         }
-        public async void Send2(string msg)
+
+        public async void Send2(CommandType commandType, string msg)
         {
             Console.WriteLine("send string msg");
         }
@@ -33,14 +43,6 @@ namespace Roulette1.Server
 
         public override async Task OnConnectedAsync()
         {
-            var msg = new SessionMessage()
-            {
-                SessionEvent= SessionEvent.OnConnect,
-                ConnectionId = Context.ConnectionId
-            };
-
-            _gameManager.SessonRequest<int>(msg);
-            
             await base.OnConnectedAsync();
         }
 

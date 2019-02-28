@@ -21,7 +21,6 @@ namespace Roulette1.Client
         private Task _connection_Closed(Exception arg)
         {
             Console.WriteLine("disconnected");
-
             return Task.FromResult(0);
         }
 
@@ -31,11 +30,13 @@ namespace Roulette1.Client
             _connection.SendAsync("Send2", msg);
         }
 
-        public bool Connect()
+        public bool Connect(string id)
         {
             try
             {
                 _connection.StartAsync().Wait();
+
+                _connection.SendAsync("Login", id);
                 return true;
             }
             catch (Exception ex)
@@ -47,6 +48,12 @@ namespace Roulette1.Client
         public void OnRespond(string action)
         {
             Console.WriteLine("server push : {0}", action);
+        }
+
+        User user = null;
+        public void OnLogon(User user)
+        {
+            this.user = user;
         }
     }
 }

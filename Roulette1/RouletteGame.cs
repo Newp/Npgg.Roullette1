@@ -14,7 +14,7 @@ namespace Roulette1
             this._hitChecker = HitChecker.MakeHitChecker().ToDictionary(v => v.ToString());
         }
 
-        public ApiResult Betting(UserAsset user, string key, int amount)
+        public ApiResult Betting(User user, string key, int amount)
         {
             if(this._hitChecker.TryGetValue(key, out var hitChecker)==false)
             {
@@ -25,20 +25,6 @@ namespace Roulette1
         }
     }
 
-    public enum ApiResult
-    {
-        None,
-        Success,
-        InvalidBetting,
-        NotEnoughMoney,
-    }
-
-    public class UserAsset
-    {
-        public string UserId { get; set; }
-        public int Money { get; set; }
-        public int OnBoard { get; set; }
-    }
 
     public class RouletteLogic
     {

@@ -17,7 +17,7 @@ namespace Roulette1.Client
 
             NetworkClient client = new NetworkClient(url);
 
-            client.Connect();
+            client.Connect("test");
 
             while(true)
             {

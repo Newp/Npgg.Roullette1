@@ -7,19 +7,17 @@ using System.Threading.Tasks;
 
 namespace Roulette1.Server
 {
-    public class GameManager
+    public class ActorManager
     {
         RootContext _context = new RootContext();
-        PID _session = null;
+        PID _user = null;
 
-        IHubContext<RouletteHub> _hub = null;
-        public GameManager(IHubContext<RouletteHub> hub)
+        public ActorManager(IHubContext<RouletteHub> hub)
         {
-            this._session = _context.Spawn(Props.FromProducer(() => new SessionActor()));
-            this._hub = hub;
+            this._user = _context.Spawn(Props.FromProducer(() => new UserManager(hub)));
         }
 
-        public Task<T> SessonRequest<T>(object obj) => _context.RequestAsync<T>(_session, obj);
+        public Task<T> SessonRequest<T>(object obj) => _context.RequestAsync<T>(_user, obj);
     }
     
 }
