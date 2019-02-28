@@ -8,6 +8,9 @@ namespace Roulette1
     {
         public readonly List<int> HitNumbers = new List<int>();
 
+
+        
+
         public override bool IsHit(int number)=>this.HitNumbers.Contains(number);
 
         public override abstract BettingType BettingType { get; }

@@ -13,7 +13,19 @@ namespace Roulette1
         public static readonly int InFieldMax = 36;
         public static readonly int StreetCount = 12;
         public static int[] InFieldNumbers = Enumerable.Range(InFieldMin, InFieldMax - InFieldMin).ToArray();
+
+        public static readonly int[] RedNumbers = new int[] { 1, 3, 5, 7, 9, 12, 14, 16, 18, 19, 21, 23, 25, 27, 30, 32, 34, 36 };
+        public static readonly int[] BlackNumbers = new int[] { 2, 4, 6, 8, 10, 11, 13, 15, 17, 20, 22, 24, 26, 28, 29, 31, 33, 35 };
+
         public static readonly Column[] AllColumns = new Column[] { Column.C1, Column.C2, Column.C3 };
+
+        public static readonly Dictionary<Column, int[]> ColumnFactors = new Func<Dictionary<Column, int[]>>(() =>
+        {
+            Dictionary<Column, int[]> result = new Dictionary<Column, int[]>();
+            foreach (var column in AllColumns)
+                result.Add(column, InFieldNumbers.Where(num => GetColumn(num) == column).ToArray());
+            return result;
+        })();
 
         public static IEnumerable<int> GetAllNumbers()
         {
@@ -66,17 +78,12 @@ namespace Roulette1
 
         public static int[] GetFactor(Column column)
         {
-            if (column.IsAmoicColumn() == false)
-                return EmptyNumbers;
-
-            int[] result = new int[StreetCount];
-            for (int i = 0; i < StreetCount; i++)
+            if(ColumnFactors.TryGetValue(column, out var result))
             {
-                result[i] = (int)column + (3 * i);
+                return result;
             }
-            return result;
+            return EmptyNumbers;
         }
-        
 
         public static Street GetStreet(int num)
         {
@@ -118,12 +125,18 @@ namespace Roulette1
         C3,
         OutOfColumn,
     }
-    
+
     public enum EvenOdd
     {
         None,
         Odd,
         Even,
+    }
+    public enum NumberColor
+    {
+        None,
+        Red,
+        Black,
     }
 
     public enum Street
