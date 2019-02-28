@@ -10,7 +10,7 @@ namespace Roulette1.Tests
     [TestFixture]
     class MultiHitCheckerTests
     {
-        List<HitChecker> hitCheckers = new List<HitChecker>();
+        List<HitChecker> hitCheckers = null;
 
         Type[] casebycase = new Type[]
                 {
@@ -31,22 +31,15 @@ namespace Roulette1.Tests
         [OneTimeSetUp]
         public void SetUp()
         {
-            hitCheckers.Clear();
-            var checkerType = typeof(HitChecker);
-            Type[] allCheckers = checkerType.Assembly.GetTypes().Where(type => type.IsAbstract == false && checkerType.IsAssignableFrom(type)).ToArray();
+            this.hitCheckers = HitChecker.MakeHitChecker();
 
-            foreach (var checker in allCheckers)
+            foreach (var checker in HitChecker.GetAllHitCheckerType())
             {
-                var m = checker.GetMethods().Where(method => method.IsStatic && method.Name == "Gen").First();
-                var checkerList = (List<HitChecker>)m.Invoke(null, null);
-                hitCheckers.AddRange(checkerList);
-
                 if(casebycase.Contains(checker) == false)
                 {
                     infieldcase.Add(checker);
                 }
             }
-
         }
 
 

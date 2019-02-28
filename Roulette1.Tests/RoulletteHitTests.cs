@@ -11,7 +11,6 @@ namespace Roulette1.Tests
     {
         int[] allnum = Number.GetAllNumbers().ToArray();
 
-
         [Test]
         public void StraightHitTest()
         {

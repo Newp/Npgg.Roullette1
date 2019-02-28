@@ -4,8 +4,4 @@
     <TargetFramework>netstandard2.0</TargetFramework>
   </PropertyGroup>
 
-  <ItemGroup>
-    <ProjectReference Include="..\Roulette1.Common\Roulette1.Common.csproj" />
-  </ItemGroup>
-
 </Project>
