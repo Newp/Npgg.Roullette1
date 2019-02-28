@@ -42,14 +42,11 @@ namespace Roulette1.Server
 
     public class RouletteHub : Hub
     {
-        RootContext context = new RootContext();
-        Props gameActor = Props.FromProducer(() => new GameActor());
-        PID pid = null;
+        
 
         public RouletteHub()
         {
             
-            this.pid = context.Spawn(gameActor);
         }
 
         public async void Betting(object[] obj)
@@ -64,9 +61,20 @@ namespace Roulette1.Server
             await Clients.All.SendAsync("broadcastMessage", name, message);
         }
 
-        public override Task OnConnectedAsync()
+        public override async Task OnConnectedAsync()
         {
-            return base.OnConnectedAsync();
+            var msg = new SessionMessage()
+            {
+                SessionEvent= SessionEvent.OnConnect,
+                ConnectionId = Context.ConnectionId
+            };
+
+            GameManager.Instance.context.RequestAsync<int>(this.session, msg);
+
+            await context.
+
+            //await Groups.AddToGroupAsync(Context.ConnectionId, "SignalR Users");
+            await base.OnConnectedAsync();
         }
 
         public override Task OnDisconnectedAsync(Exception exception)
