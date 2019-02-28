@@ -7,6 +7,7 @@ namespace Roulette1
         public readonly int HitNumber = -1;
 
         public override BettingType BettingType => BettingType.Straight;
+        public override int Odds => 35;
 
         public StraightHitChecker(int num)
         {

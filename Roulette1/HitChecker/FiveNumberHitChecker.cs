@@ -7,6 +7,7 @@ namespace Roulette1
     public class FiveNumberHitChecker : NumberListedHitChecker
     {
         public override BettingType BettingType => BettingType.FiveNumber;
+        public override int Odds => 6;
 
         public FiveNumberHitChecker()
         {

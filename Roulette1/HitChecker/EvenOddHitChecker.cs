@@ -7,6 +7,7 @@ namespace Roulette1
     public class EvenOddHitChecker : SmallChoiceNumberListedHitChecker
     {
         public override BettingType BettingType => BettingType.EvenOdd;
+        public override int Odds => 1;
 
         public static List<HitChecker> Gen() => Gen<EvenOddHitChecker>(Allowed);
         public override int[] AllowedChoiceNumber => Allowed;

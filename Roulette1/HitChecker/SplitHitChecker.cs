@@ -10,6 +10,7 @@ namespace Roulette1
         public readonly bool IsVertical;
 
         public override BettingType BettingType => BettingType.Split;
+        public override int Odds => 17;
 
         public SplitHitChecker(int num, bool isVertical)
         {

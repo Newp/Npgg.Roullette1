@@ -116,7 +116,6 @@ namespace Roulette1.Tests
                 ExpectHit(factors[1], fiveNum, sixNum, courtesyLine, 4, 4);
                 ExpectHit(factors[2], fiveNum, sixNum, courtesyLine, 3, 2);
             }
-
         }
 
         [Test]
@@ -124,7 +123,7 @@ namespace Roulette1.Tests
         {
             int fiveNum = 0;
             int sixNum = 2;
-            int courtesyLine = 1;
+            int courtesyLine = 0;
 
             var targetStreets = Number.AllStreets.Where(s => Street.S13 <= s && s <= Street.S31);
 
@@ -143,7 +142,7 @@ namespace Roulette1.Tests
         {
             int fiveNum = 0;
             int sixNum = 1;
-            int courtesyLine = 1;
+            int courtesyLine = 0;
 
             ExpectHit(34, fiveNum, sixNum, courtesyLine, 2, 1);
             ExpectHit(35, fiveNum, sixNum, courtesyLine, 3, 2);

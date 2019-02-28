@@ -7,6 +7,7 @@ namespace Roulette1
     public class StreetHitChecker : NumberListedHitChecker
     {
         public override BettingType BettingType => BettingType.Street;
+        public override int Odds => 11;
 
         public StreetHitChecker(int num)
         {

@@ -27,7 +27,6 @@ namespace Roulette1
             _betting.Increase(id, amounts);
         }
     }
-    
 
     public class BettingKey
     {

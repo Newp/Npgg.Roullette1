@@ -7,9 +7,11 @@ namespace Roulette1
     public class ColumnHitChecker : SmallChoiceNumberListedHitChecker
     {
         public override BettingType BettingType => BettingType.Column;
+        public override int Odds => 2;
 
         public static List<HitChecker> Gen() => Gen<ColumnHitChecker>(Allowed);
         public override int[] AllowedChoiceNumber => Allowed;
+
 
         public static readonly int[] Allowed = new int[] { 1, 2, 3 };
 

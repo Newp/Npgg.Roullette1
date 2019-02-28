@@ -7,11 +7,11 @@ namespace Roulette1
     public class CourtesyLineHitChecker : NumberListedHitChecker
     {
         public override BettingType BettingType => BettingType.CourtesyLine;
+        public override int Odds => 17;
 
         public CourtesyLineHitChecker()
         {
             this.AddHitNumber(new int[] { Number.N0, Number.N00});//고정픽
-            this.AddHitNumber(Enumerable.Range(13, Number.InFieldMax - 12).ToArray());
             this.CheckValidate();
         }
 

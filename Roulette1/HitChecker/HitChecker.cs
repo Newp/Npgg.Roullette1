@@ -2,13 +2,13 @@
 
 namespace Roulette1
 {
-
     public abstract class HitChecker
     {
         public bool Validated { get; private set; }
-        
+
         public abstract BettingType BettingType { get; }
-        
+        public abstract int Odds { get; }
+
         public abstract bool IsHit(int number);
         protected abstract void CheckValidate();
 
@@ -16,6 +16,8 @@ namespace Roulette1
         {
             throw new InvalidHitInfoException(this.BettingType, num, msg);
         }
+
+        
     }
 
 

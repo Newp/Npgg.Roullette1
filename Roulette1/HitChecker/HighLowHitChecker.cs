@@ -7,6 +7,7 @@ namespace Roulette1
     public class HighLowHitChecker : SmallChoiceNumberListedHitChecker
     {
         public override BettingType BettingType => BettingType.HighLow;
+        public override int Odds => 1;
 
         public static List<HitChecker> Gen() => Gen<HighLowHitChecker>(Allowed);
         public override int[] AllowedChoiceNumber => Allowed;

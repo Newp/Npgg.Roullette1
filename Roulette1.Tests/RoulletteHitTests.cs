@@ -56,7 +56,6 @@ namespace Roulette1.Tests
             Assert.IsNotNull(hit);
             
             List<int> allowed = new List<int>() { Number.N0, Number.N00 };
-            allowed.AddRange(Enumerable.Range(13, Number.InFieldMax - 12));
             Assert.AreEqual(allowed.Count, hit.HitNumbers.Count);
             
             foreach (var num in allnum)
