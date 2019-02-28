@@ -22,13 +22,23 @@ namespace Roulette1.Server
 
         public Task ReceiveAsync(IContext context)
         {
-            string userid = context.Headers.GetOrDefault("userid");
             var msg = context.Message;
 
             if (msg is Action<User> userAction)
             {
-                var user = this._users[userid];
-                userAction(user);
+                if (context.Headers.TryGetValue("userid", out string userId))
+                {
+                    var user = this._users[userId];
+                    userAction(user);
+                }
+                else
+                {
+                    //활성화 상태에 대한 처리는 일단 미룬다.
+                    foreach (var user in _users.Values)
+                    {
+                        userAction(user);
+                    }
+                }
                 context.Respond(0);
             }
             else if (msg is RequestNewUser newUser)
@@ -40,7 +50,6 @@ namespace Roulette1.Server
                     {
                         UserId = newUser.UserId,
                         Money = 100000,
-                        OnBoard = 0
                     };
                     _users.Add(user.UserId, user);
                 }

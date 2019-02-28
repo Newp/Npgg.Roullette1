@@ -13,8 +13,9 @@ namespace Roulette1.Client
         public NetworkClient(string url)
         {
             this._connection = new HubConnectionBuilder().WithUrl(url).Build();
-            _connection.On<string>("broadcastMessage", OnRespond);
+            _connection.On<User>("OnLogon", OnLogon);
 
+            _connection.On<string>("broadcastMessage", OnRespond);
             _connection.Closed += _connection_Closed;
         }
 
@@ -54,6 +55,7 @@ namespace Roulette1.Client
         public void OnLogon(User user)
         {
             this.user = user;
+            Console.WriteLine("server push : logon");
         }
     }
 }

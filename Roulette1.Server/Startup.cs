@@ -15,10 +15,14 @@ namespace Roulette1.Server
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddSingleton<ActorManager>();
+            services.AddSingleton<UserManager>();
+            services.AddSingleton<GameManager>();
+
+            
             services.AddSignalR();
             services.AddSignalRCore();
         }
-
+       
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IHostingEnvironment env)
         {
