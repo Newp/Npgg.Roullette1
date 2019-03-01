@@ -9,15 +9,24 @@ namespace Roulette1.Client
 {
     class MonitorNetworkClient : NetworkClient
     {
+        public GameState gameState { get; private set; }
         public MonitorNetworkClient(string url) : base(url)
         {
 
         }
         public override void OnGameState(GameState gameState)
         {
+            this.gameState = gameState;
             Console.WriteLine("game state => total betting: {0}, game start will {1}ms", gameState.TotalBetting, gameState.LeftMillisec);
             base.OnGameState(gameState);
         }
+        //public override void OnMoneyChanged(MoneyChanged mc)
+        //{
+        //    int before = this.User.Money;
+        //    base.OnMoneyChanged(mc);
+        //    int after = this.User.Money;
+        //    Console.WriteLine("money changed=>{0}, amount:{1},{2},{3},{4}", mc.Why, mc.Amount,before, after, mc.Result);
+        //}
     }
 
     class NetworkClient
@@ -29,7 +38,6 @@ namespace Roulette1.Client
         {
             this._connection = new HubConnectionBuilder().WithUrl(url).Build();
             _connection.On<User>("OnLogin", OnLogin);
-            _connection.On<BettingInfo>("OnBetting", OnBetting);
             _connection.On<MoneyChanged>("OnMoneyChanged", OnMoneyChanged);
             _connection.On<GameState>("OnGameState", OnGameState);
 
@@ -69,10 +77,13 @@ namespace Roulette1.Client
             Frame++;
         }
 
-        public void OnMoneyChanged(MoneyChanged mc)
-        {
-            //Console.WriteLine("MoneyChanged => why : {0}, amount : {1}", mc.Why, mc.Amount);
+        public virtual void OnMoneyChanged(MoneyChanged mc)
+        {  
+            if (this.User.Money + mc.Amount != mc.Result)
+            {
+            }
             this.User.Money += mc.Amount;
+            
             Frame++;
         }
 
@@ -81,14 +92,14 @@ namespace Roulette1.Client
             Console.WriteLine("server push : {0}", action);
             Frame++;
         }
-        public void OnBetting(BettingInfo betting)
-        {
-            if (betting.UserId != this.User.UserId)
-            {
-            }
-            this.User.CurrentBetting.Add(betting);
-            Frame++;
-        }
+        //public void OnBetting(BettingInfo betting)
+        //{
+        //    if (betting.UserId != this.User.UserId)
+        //    {
+        //    }
+        //    this.User.CurrentBetting.Add(betting);
+        //    Frame++;
+        //}
         public virtual void OnGameState(GameState gameState)
         {
             Frame++;

@@ -6,8 +6,6 @@ namespace Roulette1
     {
         public string UserId { get; set; }
         public int Money { get; set; }
-
-        public List<BettingInfo> CurrentBetting { get; set; }
     }
 
 
@@ -18,10 +16,13 @@ namespace Roulette1
         public int Amount { get; set; }
     }
 
+
+
     public struct MoneyChanged
     {
         public string Why { get; set; }
         public int Amount { get; set; }
+        public int Result { get; set; }
     }
 
     public class GameState

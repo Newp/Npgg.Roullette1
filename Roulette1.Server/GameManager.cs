@@ -37,7 +37,7 @@ namespace Roulette1.Server
 
         Stopwatch gameWatch = new Stopwatch();
         Stopwatch broadcastWatch = new Stopwatch();
-        void GameUpdate()
+        async void GameUpdate()
         {
             if(broadcastWatch.ElapsedMilliseconds > 100)
             {
@@ -56,50 +56,27 @@ namespace Roulette1.Server
             }
             gameWatch.Restart();
 
-
             int pickNumber = randomBox.Pick(); //룰렛이 결정된다.
 
             var hitList = _hitChecker.Where(kvp => kvp.Value.HitChecker.IsHit(pickNumber));
 
-            
-
             foreach(var kvp in hitList)
             {
                 int odds = kvp.Value.HitChecker.Odds + 1;
-                string why = "Win : " + kvp.Key;
-                foreach(var betting in kvp.Value.Betting)
+                foreach (var betting in kvp.Value.Betting)
                 {
-                    var user = this._users[betting.UserId];
-                    int gain = betting.Amount * odds;
-
-                    MoneyChanged mc = new MoneyChanged()
-                    {
-                        Why = why,
-                        Amount = gain,
-                    };
-                    if(user.CurrentBetting.Remove(betting) == false)
-                    {
-                    }
-                    _hub.Clients.Client(user.UserId).SendAsync("OnMoneyChanged", mc);
+                    MoneyChange(betting.UserId, "WIN : " + kvp.Key, betting.Amount * odds);
                 }
-                kvp.Value.Betting.Clear();
+            }
+
+            foreach(var hit in _hitChecker)
+            {
+                hit.Value.Betting.Clear();
             }
 
             ulong totalMoney = 0;
             foreach(var user in _users.Values)
             {
-                foreach(var betting in user.CurrentBetting)
-                {
-                    MoneyChanged mc = new MoneyChanged()
-                    {
-                        Amount = -betting.Amount
-                        , Why = "Lose : " + betting.BettingType
-                    };
-
-                    user.Money -= betting.Amount;
-                    _hub.Clients.Client(user.UserId).SendAsync("OnMoneyChanged", mc);
-                }
-                user.CurrentBetting.Clear();
                 totalMoney += (ulong)user.Money;
             }
 
@@ -107,11 +84,26 @@ namespace Roulette1.Server
             Console.ForegroundColor = ConsoleColor.Cyan;
             Console.WriteLine(msg);
             Console.ResetColor();
+            totalBetting = 0;
             gameWatch.Restart();
         }
 
         ulong totalBetting;
         int frame = 0;
+
+        public void MoneyChange(string userId, string why, int amount)
+        {
+            var user = this._users[userId];
+            user.Money += amount;
+            MoneyChanged mc = new MoneyChanged()
+            {
+                Amount = amount,
+                Why = why,
+                Result = user.Money
+            };
+
+            _hub.Clients.Client(user.UserId).SendAsync("OnMoneyChanged", mc);
+        }
 
         public Task ReceiveAsync(IContext context)
         {
@@ -135,13 +127,11 @@ namespace Roulette1.Server
                 {
                     context.Respond(ApiResult.InvalidBetting);
                 }
+                
                 checker.Betting.Add(betting);
-                var user = _users[betting.UserId];
-                user.Money -= betting.Amount;
                 totalBetting += (ulong)betting.Amount;
-                user.CurrentBetting.Add(betting);
 
-                _hub.Clients.Client(user.UserId).SendAsync("OnBetting", betting);
+                this.MoneyChange(betting.UserId, "betting:" + betting.BettingType, -betting.Amount);
 
                 context.Respond(ApiResult.Success);
             }
@@ -153,8 +143,7 @@ namespace Roulette1.Server
                     user = new User()
                     {
                         UserId = newUser.UserId,
-                        Money = 100000,
-                        CurrentBetting = new List<BettingInfo>()
+                        Money = 10000,
                     };
                     _users.Add(user.UserId, user);
                 }
