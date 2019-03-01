@@ -13,14 +13,11 @@ namespace Roulette1.Server
     {
         RootContext _context = new RootContext();
         PID _user = null;
-        PID _game = null;
 
         public ActorManager(IHubContext<RouletteHub> hub, IServiceProvider provider)
         {
             this._user = _context.Spawn(Props.FromProducer(() => provider.GetService<UserManager>()));
-            this._game = _context.Spawn(Props.FromProducer(() => provider.GetService<GameManager>()));
         }
-
 
         void Update()
         {
@@ -30,8 +27,6 @@ namespace Roulette1.Server
             long elpsedms = 0;
             while(true)
             {
-
-
                 frame++;
                 elpsedms += watch.ElapsedMilliseconds;
 
@@ -47,6 +42,10 @@ namespace Roulette1.Server
         }
 
         public Task<T> SessonRequest<T>(object obj) => _context.RequestAsync<T>(_user, obj);
+
+        public Task<ApiResult> Betting(BettingInfo req)
+        {
+            return _context.RequestAsync<ApiResult>(_user, req);
+        }
     }
-    
 }

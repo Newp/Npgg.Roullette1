@@ -16,7 +16,6 @@ namespace Roulette1.Server
         {
             services.AddSingleton<ActorManager>();
             services.AddSingleton<UserManager>();
-            services.AddSingleton<GameManager>();
 
             
             services.AddSignalR();

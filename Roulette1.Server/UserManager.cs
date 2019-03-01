@@ -8,58 +8,63 @@ using System.Threading.Tasks;
 
 namespace Roulette1.Server
 {
-
     public class UserManager : IActor
     {
         Dictionary<string, User> _users = new Dictionary<string, User>();
         IHubContext<RouletteHub> _hub;
+        Dictionary<string, BettingChecker> _hitChecker = new Dictionary<string, BettingChecker>();
+
         public UserManager(IHubContext<RouletteHub> hub)
         {
             this._hub = hub;
+            foreach (var hc in HitChecker.MakeHitChecker())
+            {
+                _hitChecker.Add(hc.ToString(), new BettingChecker()
+                {
+                    Betting =new List<BettingInfo>()
+                    ,HitChecker = hc
+                });
+            }
         }
-
-        int idseq = 1;
+        
+        
 
         public Task ReceiveAsync(IContext context)
         {
             var msg = context.Message;
 
-            if (msg is Action<User> userAction)
+            if (msg is BettingInfo betting)
             {
-                if (context.Headers.TryGetValue("userid", out string userId))
+                if (_hitChecker.TryGetValue(betting.BettingType, out var checker) == false)
                 {
-                    var user = this._users[userId];
-                    userAction(user);
+                    context.Respond(ApiResult.InvalidBetting);
                 }
-                else
-                {
-                    //활성화 상태에 대한 처리는 일단 미룬다.
-                    foreach (var user in _users.Values)
-                    {
-                        userAction(user);
-                    }
-                }
-                context.Respond(0);
+                checker.Betting.Add(betting);
+                var user = _users[betting.UserId];
+                user.Money -= betting.Amount;
+                user.CurrentBetting.Add(betting);
+
+                _hub.Clients.Client(user.UserId).SendAsync("OnBetting", betting);
+
+                context.Respond(ApiResult.Success);
             }
             else if (msg is RequestNewUser newUser)
             {
-
                 if(_users.TryGetValue(newUser.UserId, out var user) == false)
                 {
                     user = new User()
                     {
                         UserId = newUser.UserId,
                         Money = 100000,
+                        CurrentBetting = new List<BettingInfo>()
                     };
                     _users.Add(user.UserId, user);
                 }
-                user.ConnectedId = newUser.ConnectedId;
+                _hub.Clients.Client(newUser.UserId).SendAsync("OnLogin", user);
 
                 context.Respond(user);
             }
-            else if (msg is SystemMessage)
-            {
-            }
+            else if (msg is SystemMessage) { }
             else
             {
 
@@ -73,7 +78,6 @@ namespace Roulette1.Server
     public class RequestNewUser
     {
         public string UserId { get; set; }
-        public string ConnectedId { get; set; }
     }
     
     public enum SessionEvent
@@ -81,10 +85,18 @@ namespace Roulette1.Server
         None,
         OnLogin,
     }
+
     public class SessionMessage
     {
         public SessionEvent SessionEvent { get; set; }
         public string UserId { get; set; }
         public string ConnectionId { get; set; }
     }
+
+    public class BettingChecker
+    {
+        public HitChecker HitChecker { get; set; }
+        public List<BettingInfo> Betting { get; set; }
+    }
+
 }
