@@ -80,7 +80,7 @@ namespace Roulette1.Server
                 totalMoney += (ulong)user.Money;
             }
 
-            string msg = string.Format("game finished => elapsed : {0}ms, total money : {1}", gameWatch.ElapsedMilliseconds, totalMoney);
+            string msg = string.Format("game finished => elapsed : {0}ms, total money : {1}, total user:{2}", gameWatch.ElapsedMilliseconds, totalMoney, this._users.Count);
             Console.ForegroundColor = ConsoleColor.Cyan;
             Console.WriteLine(msg);
             Console.ResetColor();
@@ -125,7 +125,7 @@ namespace Roulette1.Server
                 frame++;
                 if (_hitChecker.TryGetValue(betting.BettingType, out var checker) == false)
                 {
-                    context.Respond(ApiResult.InvalidBetting);
+                    context.Respond(0);
                 }
                 
                 checker.Betting.Add(betting);
@@ -133,7 +133,7 @@ namespace Roulette1.Server
 
                 this.MoneyChange(betting.UserId, "betting:" + betting.BettingType, -betting.Amount);
 
-                context.Respond(ApiResult.Success);
+                context.Respond(0);
             }
             else if (msg is RequestNewUser newUser)
             {

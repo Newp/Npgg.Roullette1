@@ -11,6 +11,5 @@
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Roulette1.Common\Roulette1.Common.csproj" />
-    <ProjectReference Include="..\Roulette1\Roulette1.csproj" />
   </ItemGroup>
 </Project>

@@ -171,8 +171,6 @@ namespace Roulette1.Tests
                 Assert.IsTrue(list[1].IsHit(num));
         }
 
-     
-
         [Test]
         public void ColorHitTest()
         {

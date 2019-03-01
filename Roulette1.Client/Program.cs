@@ -23,7 +23,7 @@ namespace Roulette1.Client
         static void Main(string[] args)
         {
             List<NetworkClient> clientList = new List<NetworkClient>();
-            int userCount = 0;
+            int userCount = 500;
 
             Console.WriteLine("anykey to start");
             Console.ReadKey(false);
@@ -44,21 +44,23 @@ namespace Roulette1.Client
 
             Stopwatch framewatch = new Stopwatch();
             framewatch.Start();
+            Stopwatch workerWatch = new Stopwatch();
+            workerWatch.Start();
 
-            while(master.gameState == null)
+            while (master.gameState == null)
             {
                 Thread.Sleep(200);
             }
             while (true)
             {
-                if( master.gameState.LeftMillisec > 3000
-                    && master.gameState.LeftMillisec < 7000)
+                
+
+                if (workerWatch.ElapsedMilliseconds > 3000)
                 {
                     foreach (var client in clientList)
                     {
                         if (client.Connected == false)
                             client.Connect();
-
 
                         if (client.User == null)
                         {
@@ -66,38 +68,35 @@ namespace Roulette1.Client
                             continue;
                         }
 
+
+                        if (framewatch.ElapsedMilliseconds > 1000)
+                        {
+                            int frame = 0;
+                            long totalMoney = 0;
+                            foreach (var client2 in clientList)
+                            {
+                                frame += client2.Frame;
+                                client2.Frame = 0;
+                                if (client2.User != null)
+                                    totalMoney += (long)client2.User.Money;
+
+                                //Console.ForegroundColor = ConsoleColor.Black;
+                            }
+
+                            Console.Clear();
+                            Console.WriteLine("frame : {0}, total money : {1} >> {2}", frame, totalMoney, framewatch.ElapsedMilliseconds);
+                            framewatch.Restart();
+                        }
+
                         string randomBetting = PickOne();
                         client.Betting(randomBetting, 1);
-                        Thread.Sleep(1);
                     }
-                    continue;
+                    workerWatch.Restart();
                 }
-                else
-                {
-                    Thread.Sleep(200);
-                }
+          
+
                 
-
-                if (framewatch.ElapsedMilliseconds > 1000)
-                {
-                    int frame = 0;
-                    long totalMoney = 0;
-                    foreach (var client in clientList)
-                    {
-                        frame += client.Frame;
-                        client.Frame = 0;
-                        if(client.User != null)
-                            totalMoney += (long)client.User.Money;
-
-                        //Console.ForegroundColor = ConsoleColor.Black;
-                    }
-
-                    Console.Clear();
-                    Console.WriteLine("frame : {0}, total money : {1}", frame, totalMoney);
-                    framewatch.Restart();
-                }
-
-                Thread.Sleep(200);
+                
             }
         }
         

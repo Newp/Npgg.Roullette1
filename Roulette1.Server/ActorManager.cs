@@ -44,9 +44,9 @@ namespace Roulette1.Server
 
         public Task<T> SessonRequest<T>(object obj) => _context.RequestAsync<T>(_user, obj);
 
-        public Task<ApiResult> Betting(BettingInfo req)
+        public Task<int> Betting(BettingInfo req)
         {
-            return _context.RequestAsync<ApiResult>(_user, req);
+            return _context.RequestAsync<int>(_user, req);
         }
     }
 
