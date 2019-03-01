@@ -17,4 +17,10 @@ namespace Roulette1
         public string BettingType { get; set; }
         public int Amount { get; set; }
     }
+
+    public struct MoneyChanged
+    {
+        public string Why { get; set; }
+        public int Amount { get; set; }
+    }
 }

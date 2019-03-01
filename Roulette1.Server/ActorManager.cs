@@ -17,27 +17,28 @@ namespace Roulette1.Server
         public ActorManager(IHubContext<RouletteHub> hub, IServiceProvider provider)
         {
             this._user = _context.Spawn(Props.FromProducer(() => provider.GetService<GameManager>()));
-            Task.Factory.StartNew(Update);
+            Task.Factory.StartNew(FrameUpdate);
         }
 
-        async void Update()
+        async void FrameUpdate()
         {
             Console.WriteLine("ActorManager Update Started");
-            Stopwatch watch = new Stopwatch();
-            watch.Start();
+            Stopwatch frameWatch = new Stopwatch();
+            frameWatch.Start();
             var update = new Update();
             var getframe = new GetFrame();
             while (true)
             {
                 await _context.RequestAsync<int>(_user, update);
 
-                if (watch.ElapsedMilliseconds > 1000)
+                if (frameWatch.ElapsedMilliseconds > 1000)
                 {
                     int frame  = await _context.RequestAsync<int>(_user, getframe); ;
-                    Console.WriteLine("frame:{0}", frame);
-                    watch.Restart();
-                }
+                    frameWatch.Stop();
 
+                    Console.WriteLine("frame:{0} on {1}", frame, frameWatch.ElapsedMilliseconds);
+                    frameWatch.Restart();
+                }
             }
         }
 

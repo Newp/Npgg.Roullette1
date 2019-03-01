@@ -3,6 +3,7 @@ using Proto;
 using Proto.Mailbox;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -14,6 +15,7 @@ namespace Roulette1.Server
         IHubContext<RouletteHub> _hub;
         Dictionary<string, BettingChecker> _hitChecker = new Dictionary<string, BettingChecker>();
 
+        RandomBox<int> randomBox = new RandomBox<int>();
         public GameManager(IHubContext<RouletteHub> hub)
         {
             this._hub = hub;
@@ -24,6 +26,60 @@ namespace Roulette1.Server
                     Betting =new List<BettingInfo>()
                     ,HitChecker = hc
                 });
+            }
+
+            foreach(var num in Number.GetAllNumbers())
+                randomBox.Add(100, num);
+
+            updateWatch.Start();
+        }
+
+        Stopwatch updateWatch = new Stopwatch();
+        void GameUpdate()
+        {
+            if(updateWatch.ElapsedMilliseconds > 10000)
+            {
+                updateWatch.Stop();
+
+                int result = randomBox.Pick();
+                var hitList = _hitChecker.Where(kvp => kvp.Value.HitChecker.IsHit(result));
+                foreach(var kvp in hitList)
+                {
+                    int odds = kvp.Value.HitChecker.Odds + 1;
+                    string why = "Win : " + kvp.Key;
+                    foreach(var betting in kvp.Value.Betting)
+                    {
+                        var user = this._users[betting.UserId];
+                        int gain = betting.Amount * odds;
+
+                        MoneyChanged mc = new MoneyChanged()
+                        {
+                            Why = why,
+                            Amount = gain,
+                        };
+                        if(user.CurrentBetting.Remove(betting) == false)
+                        {
+                        }
+                        _hub.Clients.Client(user.UserId).SendAsync("MoneyChanged", mc);
+                    }
+                    kvp.Value.Betting.Clear();
+                }
+
+                foreach(var user in _users.Values)
+                {
+                    foreach(var betting in user.CurrentBetting)
+                    {
+                        MoneyChanged mc = new MoneyChanged()
+                        {
+                            Amount = -betting.Amount
+                            , Why = "Lose : " + betting.BettingType
+                        };
+                        _hub.Clients.Client(user.UserId).SendAsync("MoneyChanged", mc);
+                    }
+                    user.CurrentBetting.Clear();
+                }
+
+                updateWatch.Restart();
             }
         }
 
@@ -37,6 +93,7 @@ namespace Roulette1.Server
             if (msg is Update)
             {
                 frame++;
+                GameUpdate();
                 context.Respond(0);
             }
             else if (msg is GetFrame)

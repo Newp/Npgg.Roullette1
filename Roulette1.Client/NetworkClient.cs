@@ -16,6 +16,7 @@ namespace Roulette1.Client
             this._connection = new HubConnectionBuilder().WithUrl(url).Build();
             _connection.On<User>("OnLogin", OnLogin);
             _connection.On<BettingInfo>("OnBetting", OnBetting);
+            _connection.On<MoneyChanged>("MoneyChanged", MoneyChanged);
 
             _connection.On<string>("broadcastMessage", OnRespond);
             _connection.Closed += _connection_Closed;
@@ -50,6 +51,12 @@ namespace Roulette1.Client
             {
                 return false;
             }
+        }
+
+        public void MoneyChanged(MoneyChanged mc)
+        {
+            Console.WriteLine("MoneyChanged => why : {0}, amount : {1}", mc.Why, mc.Amount);
+            this.user.Money += mc.Amount;
         }
 
         public void OnRespond(string action)

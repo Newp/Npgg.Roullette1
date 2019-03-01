@@ -42,8 +42,6 @@ namespace Roulette1
             }
             yield break;
         }
-        
-
 
         public static bool IsAtomicNumber(int value)
         {
