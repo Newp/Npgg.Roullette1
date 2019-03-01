@@ -8,13 +8,13 @@ using System.Threading.Tasks;
 
 namespace Roulette1.Server
 {
-    public class UserManager : IActor
+    public class GameManager : IActor
     {
         Dictionary<string, User> _users = new Dictionary<string, User>();
         IHubContext<RouletteHub> _hub;
         Dictionary<string, BettingChecker> _hitChecker = new Dictionary<string, BettingChecker>();
 
-        public UserManager(IHubContext<RouletteHub> hub)
+        public GameManager(IHubContext<RouletteHub> hub)
         {
             this._hub = hub;
             foreach (var hc in HitChecker.MakeHitChecker())
@@ -26,15 +26,27 @@ namespace Roulette1.Server
                 });
             }
         }
-        
-        
+
+        ulong totalBetting;
+        int frame = 0;
 
         public Task ReceiveAsync(IContext context)
         {
             var msg = context.Message;
 
-            if (msg is BettingInfo betting)
+            if (msg is Update)
             {
+                frame++;
+                context.Respond(0);
+            }
+            else if (msg is GetFrame)
+            {
+                context.Respond(++frame);
+                frame = 0;
+            }
+            else if (msg is BettingInfo betting)
+            {
+                frame++;
                 if (_hitChecker.TryGetValue(betting.BettingType, out var checker) == false)
                 {
                     context.Respond(ApiResult.InvalidBetting);
@@ -42,6 +54,7 @@ namespace Roulette1.Server
                 checker.Betting.Add(betting);
                 var user = _users[betting.UserId];
                 user.Money -= betting.Amount;
+                totalBetting += (ulong)betting.Amount;
                 user.CurrentBetting.Add(betting);
 
                 _hub.Clients.Client(user.UserId).SendAsync("OnBetting", betting);
@@ -50,7 +63,8 @@ namespace Roulette1.Server
             }
             else if (msg is RequestNewUser newUser)
             {
-                if(_users.TryGetValue(newUser.UserId, out var user) == false)
+                frame++;
+                if (_users.TryGetValue(newUser.UserId, out var user) == false)
                 {
                     user = new User()
                     {
@@ -72,6 +86,7 @@ namespace Roulette1.Server
 
             return Actor.Done;
         }
+        
         
     }
 

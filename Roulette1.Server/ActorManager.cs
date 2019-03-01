@@ -16,28 +16,28 @@ namespace Roulette1.Server
 
         public ActorManager(IHubContext<RouletteHub> hub, IServiceProvider provider)
         {
-            this._user = _context.Spawn(Props.FromProducer(() => provider.GetService<UserManager>()));
+            this._user = _context.Spawn(Props.FromProducer(() => provider.GetService<GameManager>()));
+            Task.Factory.StartNew(Update);
         }
 
-        void Update()
+        async void Update()
         {
+            Console.WriteLine("ActorManager Update Started");
             Stopwatch watch = new Stopwatch();
             watch.Start();
-            int frame = 0;
-            long elpsedms = 0;
-            while(true)
+            var update = new Update();
+            var getframe = new GetFrame();
+            while (true)
             {
-                frame++;
-                elpsedms += watch.ElapsedMilliseconds;
+                await _context.RequestAsync<int>(_user, update);
 
-                if(elpsedms > 1000)
+                if (watch.ElapsedMilliseconds > 1000)
                 {
+                    int frame  = await _context.RequestAsync<int>(_user, getframe); ;
                     Console.WriteLine("frame:{0}", frame);
-                    frame = 0;
-                    elpsedms = 0;
+                    watch.Restart();
                 }
 
-                watch.Restart();
             }
         }
 
@@ -48,4 +48,7 @@ namespace Roulette1.Server
             return _context.RequestAsync<ApiResult>(_user, req);
         }
     }
+
+    public class Update { }
+    public class GetFrame { }
 }

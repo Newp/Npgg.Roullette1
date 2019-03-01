@@ -27,12 +27,14 @@ namespace Roulette1.Client
 
             NetworkClient client = new NetworkClient(url);
 
-
-            client.Connect("test");
+            Console.WriteLine("client started");
 
             while(true)
             {
                 string msg = Console.ReadLine();
+
+                if (client.Connected == false)
+                    client.Connect();
 
                 string randomBetting = PickOne();
                 client.Betting(randomBetting, 1);

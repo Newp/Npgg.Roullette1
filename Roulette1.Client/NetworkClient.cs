@@ -10,6 +10,7 @@ namespace Roulette1.Client
     class NetworkClient
     {
         HubConnection _connection;
+        public bool Connected => _connection.State == HubConnectionState.Connected;
         public NetworkClient(string url)
         {
             this._connection = new HubConnectionBuilder().WithUrl(url).Build();
@@ -37,12 +38,12 @@ namespace Roulette1.Client
             _connection.SendAsync("Send2", msg);
         }
 
-        public bool Connect(string id)
+        public bool Connect()
         {
             try
             {
                 _connection.StartAsync().Wait();
-                _connection.SendAsync("Login", id);
+                _connection.SendAsync("Login", "dummy");
                 return true;
             }
             catch (Exception ex)
