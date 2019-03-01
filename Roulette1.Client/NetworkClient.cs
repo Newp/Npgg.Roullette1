@@ -7,8 +7,22 @@ using System.Threading.Tasks;
 
 namespace Roulette1.Client
 {
+    class MonitorNetworkClient : NetworkClient
+    {
+        public MonitorNetworkClient(string url) : base(url)
+        {
+
+        }
+        public override void OnGameState(GameState gameState)
+        {
+            Console.WriteLine("game state => total betting: {0}, game start will {1}ms", gameState.TotalBetting, gameState.LeftMillisec);
+            base.OnGameState(gameState);
+        }
+    }
+
     class NetworkClient
     {
+        public int Frame { get; set; }
         HubConnection _connection;
         public bool Connected => _connection.State == HubConnectionState.Connected;
         public NetworkClient(string url)
@@ -16,27 +30,22 @@ namespace Roulette1.Client
             this._connection = new HubConnectionBuilder().WithUrl(url).Build();
             _connection.On<User>("OnLogin", OnLogin);
             _connection.On<BettingInfo>("OnBetting", OnBetting);
-            _connection.On<MoneyChanged>("MoneyChanged", MoneyChanged);
+            _connection.On<MoneyChanged>("OnMoneyChanged", OnMoneyChanged);
+            _connection.On<GameState>("OnGameState", OnGameState);
 
-            _connection.On<string>("broadcastMessage", OnRespond);
             _connection.Closed += _connection_Closed;
         }
 
         private Task _connection_Closed(Exception arg)
         {
-            Console.WriteLine("disconnected");
+            Console.WriteLine("disconnected : {0}", this.User.UserId);
             return Task.FromResult(0);
         }
 
         public void Betting(string bettingType, int amount)
         {
             _connection.SendAsync("Betting", bettingType, amount);
-        }
-
-        public void Send(string msg)
-        {
-            _connection.SendAsync("Send", msg);
-            _connection.SendAsync("Send2", msg);
+            Frame++;
         }
 
         public bool Connect()
@@ -44,7 +53,8 @@ namespace Roulette1.Client
             try
             {
                 _connection.StartAsync().Wait();
-                _connection.SendAsync("Login", "dummy");
+                Frame++;
+                Login();
                 return true;
             }
             catch (Exception ex)
@@ -53,29 +63,42 @@ namespace Roulette1.Client
             }
         }
 
-        public void MoneyChanged(MoneyChanged mc)
+        public void Login()
         {
-            Console.WriteLine("MoneyChanged => why : {0}, amount : {1}", mc.Why, mc.Amount);
-            this.user.Money += mc.Amount;
+            _connection.SendAsync("Login", "dummy");
+            Frame++;
+        }
+
+        public void OnMoneyChanged(MoneyChanged mc)
+        {
+            //Console.WriteLine("MoneyChanged => why : {0}, amount : {1}", mc.Why, mc.Amount);
+            this.User.Money += mc.Amount;
+            Frame++;
         }
 
         public void OnRespond(string action)
         {
             Console.WriteLine("server push : {0}", action);
+            Frame++;
         }
         public void OnBetting(BettingInfo betting)
         {
-            if(betting.UserId != this.user.UserId)
+            if (betting.UserId != this.User.UserId)
             {
             }
-            this.user.CurrentBetting.Add(betting);
+            this.User.CurrentBetting.Add(betting);
+            Frame++;
+        }
+        public virtual void OnGameState(GameState gameState)
+        {
+            Frame++;
         }
 
-       User user = null;
+        public User User { get; private set; }
         public void OnLogin(User user)
         {
-            this.user = user;
-            Console.WriteLine("server push : logon");
+            this.User = user;
+            Frame++;
         }
     }
 }

@@ -23,4 +23,10 @@ namespace Roulette1
         public string Why { get; set; }
         public int Amount { get; set; }
     }
+
+    public class GameState
+    {
+        public int LeftMillisec { get; set; }
+        public ulong TotalBetting { get; set; }
+    }
 }

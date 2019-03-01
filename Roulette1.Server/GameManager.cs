@@ -31,56 +31,83 @@ namespace Roulette1.Server
             foreach(var num in Number.GetAllNumbers())
                 randomBox.Add(100, num);
 
-            updateWatch.Start();
+            gameWatch.Start();
+            broadcastWatch.Start();
         }
 
-        Stopwatch updateWatch = new Stopwatch();
+        Stopwatch gameWatch = new Stopwatch();
+        Stopwatch broadcastWatch = new Stopwatch();
         void GameUpdate()
         {
-            if(updateWatch.ElapsedMilliseconds > 10000)
+            if(broadcastWatch.ElapsedMilliseconds > 100)
             {
-                updateWatch.Stop();
+                GameState bs = new GameState();
+                bs.LeftMillisec = 10000 - (int)gameWatch.ElapsedMilliseconds;
+                bs.TotalBetting = this.totalBetting;
 
-                int result = randomBox.Pick();
-                var hitList = _hitChecker.Where(kvp => kvp.Value.HitChecker.IsHit(result));
-                foreach(var kvp in hitList)
-                {
-                    int odds = kvp.Value.HitChecker.Odds + 1;
-                    string why = "Win : " + kvp.Key;
-                    foreach(var betting in kvp.Value.Betting)
-                    {
-                        var user = this._users[betting.UserId];
-                        int gain = betting.Amount * odds;
+                _hub.Clients.All.SendAsync("OnGameState", bs);
 
-                        MoneyChanged mc = new MoneyChanged()
-                        {
-                            Why = why,
-                            Amount = gain,
-                        };
-                        if(user.CurrentBetting.Remove(betting) == false)
-                        {
-                        }
-                        _hub.Clients.Client(user.UserId).SendAsync("MoneyChanged", mc);
-                    }
-                    kvp.Value.Betting.Clear();
-                }
-
-                foreach(var user in _users.Values)
-                {
-                    foreach(var betting in user.CurrentBetting)
-                    {
-                        MoneyChanged mc = new MoneyChanged()
-                        {
-                            Amount = -betting.Amount
-                            , Why = "Lose : " + betting.BettingType
-                        };
-                        _hub.Clients.Client(user.UserId).SendAsync("MoneyChanged", mc);
-                    }
-                    user.CurrentBetting.Clear();
-                }
-
-                updateWatch.Restart();
+                broadcastWatch.Restart();
             }
+
+            if (gameWatch.ElapsedMilliseconds < 10000)
+            {
+                return;
+            }
+            gameWatch.Restart();
+
+
+            int pickNumber = randomBox.Pick(); //룰렛이 결정된다.
+
+            var hitList = _hitChecker.Where(kvp => kvp.Value.HitChecker.IsHit(pickNumber));
+
+            
+
+            foreach(var kvp in hitList)
+            {
+                int odds = kvp.Value.HitChecker.Odds + 1;
+                string why = "Win : " + kvp.Key;
+                foreach(var betting in kvp.Value.Betting)
+                {
+                    var user = this._users[betting.UserId];
+                    int gain = betting.Amount * odds;
+
+                    MoneyChanged mc = new MoneyChanged()
+                    {
+                        Why = why,
+                        Amount = gain,
+                    };
+                    if(user.CurrentBetting.Remove(betting) == false)
+                    {
+                    }
+                    _hub.Clients.Client(user.UserId).SendAsync("OnMoneyChanged", mc);
+                }
+                kvp.Value.Betting.Clear();
+            }
+
+            ulong totalMoney = 0;
+            foreach(var user in _users.Values)
+            {
+                foreach(var betting in user.CurrentBetting)
+                {
+                    MoneyChanged mc = new MoneyChanged()
+                    {
+                        Amount = -betting.Amount
+                        , Why = "Lose : " + betting.BettingType
+                    };
+
+                    user.Money -= betting.Amount;
+                    _hub.Clients.Client(user.UserId).SendAsync("OnMoneyChanged", mc);
+                }
+                user.CurrentBetting.Clear();
+                totalMoney += (ulong)user.Money;
+            }
+
+            string msg = string.Format("game finished => elapsed : {0}ms, total money : {1}", gameWatch.ElapsedMilliseconds, totalMoney);
+            Console.ForegroundColor = ConsoleColor.Cyan;
+            Console.WriteLine(msg);
+            Console.ResetColor();
+            gameWatch.Restart();
         }
 
         ulong totalBetting;
